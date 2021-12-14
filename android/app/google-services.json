@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "286075290440",
+    "project_id": "hamroelectronics-7fe28",
+    "storage_bucket": "hamroelectronics-7fe28.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286075290440:android:ccf059c12c48de7e63297d",
+        "android_client_info": {
+          "package_name": "com.bits.hamro_electronics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286075290440-j96uvil5lda5r06iarpgg31fvcuku291.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZdYOjWDlEmANVTFMytKnRjoXVKVwnFDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286075290440-j96uvil5lda5r06iarpgg31fvcuku291.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "286075290440-lldnja176d4u1c1d979kk7hkv2aa2nv6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bits.hamroElectronics"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
