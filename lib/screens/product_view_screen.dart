@@ -29,7 +29,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
   int userid = 0;
 
   String? color;
-  String? size;
+  String size = "";
 
   _getUserId() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -96,6 +96,8 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
     iswishlist();
     isCart();
   }
+
+  bool selected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -297,29 +299,61 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                           child: product.size == null
                               ? const Text(
                                   'No Size Available',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w300,
                                   ),
                                 )
-                              : DropdownButton(
-                                  value: size,
-                                  hint: const Text('Choose Size'),
-                                  items: product.size!
+                              : Row(
+                                  children: product.size!
                                       .split(",")
                                       .toList()
                                       .map((e) {
-                                    return DropdownMenuItem<String>(
-                                      value: e,
-                                      child: Text(e),
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: mediaQuery.height * 0.02,
+                                        horizontal: mediaQuery.width * 0.01,
+                                      ),
+                                      child: ChoiceChip(
+                                        backgroundColor: Colors.indigo.shade100,
+                                        labelStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        selected: size.contains(e),
+                                        onSelected: (value) {
+                                          setState(() {
+                                            size = e;
+
+                                            print(size);
+                                          });
+                                        },
+                                        tooltip: e,
+                                        selectedShadowColor:
+                                            Colors.indigo.shade300,
+                                        selectedColor: Colors.indigo,
+                                        label: Text(e),
+                                      ),
                                     );
                                   }).toList(),
-                                  onChanged: (s) {
-                                    setState(() {
-                                      size = s.toString();
-                                    });
-                                  },
                                 ),
+                          // DropdownButton(
+                          //     value: size,
+                          //     hint: const Text('Choose Size'),
+                          //     items: product.size!
+                          //         .split(",")
+                          //         .toList()
+                          //         .map((e) {
+                          //       return DropdownMenuItem<String>(
+                          //         value: e,
+                          //         child: Text(e),
+                          //       );
+                          //     }).toList(),
+                          //     onChanged: (s) {
+                          //       setState(() {
+                          //         size = s.toString();
+                          //       });
+                          //     },
+                          //   ),
                         ),
                       ],
                     ),

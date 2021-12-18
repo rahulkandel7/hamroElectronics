@@ -65,7 +65,6 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     _getUserID();
-    print('this is init');
     cartController.fetchCart(userId.toString()).then((_) {
       cartController.total.value = 0;
       for (var element in cartController.carts) {
@@ -453,8 +452,28 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context)
-                                        .pushNamed(CheckOutScreen.routeName);
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            CheckOutScreen(),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          const begin = Offset(0.0, 1.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.linear;
+
+                                          var tween = Tween(
+                                                  begin: begin, end: end)
+                                              .chain(CurveTween(curve: curve));
+
+                                          return SlideTransition(
+                                            position: animation.drive(tween),
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
                                     setState(() {
                                       cartController.total.value = 0;
                                       for (var element
@@ -480,13 +499,12 @@ class _CartScreenState extends State<CartScreen> {
                                     });
                                   },
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text(
                                         'CheckOut',
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
+                                        padding: EdgeInsets.only(left: 8.0),
                                         child: Icon(
                                           Icons.arrow_forward_ios_outlined,
                                           size: 18,
