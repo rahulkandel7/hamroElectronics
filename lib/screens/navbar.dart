@@ -5,10 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:hamro_electronics/controllers/bannerController.dart';
-import 'package:hamro_electronics/controllers/categoryController.dart';
-import 'package:hamro_electronics/controllers/notificationController.dart';
-import 'package:hamro_electronics/controllers/toppicksController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/productController.dart';
@@ -19,6 +15,10 @@ import 'homepage.dart';
 import 'profile_screen.dart';
 import '../controllers/cartController.dart';
 import '../controllers/wishlistController.dart';
+import '../controllers/bannerController.dart';
+import '../controllers/categoryController.dart';
+import '../controllers/notificationController.dart';
+import '../controllers/toppicksController.dart';
 import '../main.dart';
 
 class Navbar extends StatefulWidget {

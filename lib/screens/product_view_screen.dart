@@ -28,7 +28,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
 
   int userid = 0;
 
-  String? color;
+  String color = "";
   String size = "";
 
   _getUserId() async {
@@ -84,7 +84,6 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getUserId();
   }
@@ -311,27 +310,31 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                       .map((e) {
                                     return Padding(
                                       padding: EdgeInsets.symmetric(
-                                        vertical: mediaQuery.height * 0.02,
                                         horizontal: mediaQuery.width * 0.01,
                                       ),
-                                      child: ChoiceChip(
-                                        backgroundColor: Colors.indigo.shade100,
-                                        labelStyle: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        selected: size.contains(e),
-                                        onSelected: (value) {
-                                          setState(() {
-                                            size = e;
+                                      child: Wrap(
+                                        children: [
+                                          ChoiceChip(
+                                            backgroundColor:
+                                                Colors.indigo.shade100,
+                                            labelStyle: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            selected: size.contains(e),
+                                            onSelected: (value) {
+                                              setState(() {
+                                                size = e;
 
-                                            print(size);
-                                          });
-                                        },
-                                        tooltip: e,
-                                        selectedShadowColor:
-                                            Colors.indigo.shade300,
-                                        selectedColor: Colors.indigo,
-                                        label: Text(e),
+                                                print(size);
+                                              });
+                                            },
+                                            tooltip: e,
+                                            selectedShadowColor:
+                                                Colors.indigo.shade300,
+                                            selectedColor: Colors.indigo,
+                                            label: Text(e),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   }).toList(),
@@ -386,30 +389,100 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                 )
-                              : DropdownButton(
-                                  value: color,
-                                  hint: const Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: Text('Choose Color'),
-                                  ),
-                                  items: product.color!
+                              : Row(
+                                  children: product.color!
                                       .split(",")
                                       .toList()
                                       .map((e) {
-                                    return DropdownMenuItem<String>(
-                                      value: e,
-                                      child: Text(e),
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: mediaQuery.width * 0.01,
+                                      ),
+                                      child: Wrap(
+                                        children: [
+                                          ChoiceChip(
+                                            backgroundColor:
+                                                Colors.indigo.shade100,
+                                            labelStyle: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            selected: color.contains(e),
+                                            onSelected: (value) {
+                                              setState(() {
+                                                color = e;
+
+                                                print(color);
+                                              });
+                                            },
+                                            tooltip: e,
+                                            selectedShadowColor:
+                                                Colors.indigo.shade300,
+                                            selectedColor: Colors.indigo,
+                                            label: Text(e),
+                                          ),
+                                        ],
+                                      ),
                                     );
                                   }).toList(),
-                                  onChanged: (c) {
-                                    setState(() {
-                                      color = c.toString();
-                                    });
-                                  },
                                 ),
                         ),
                       ],
                     ),
+
+                    // Row(
+                    //   children: [
+                    //     Padding(
+                    //       padding: EdgeInsets.only(
+                    //         top: mediaQuery.height * 0.01,
+                    //         bottom: mediaQuery.height * 0.01,
+                    //         left: mediaQuery.width * 0.06,
+                    //         right: mediaQuery.width * 0.03,
+                    //       ),
+                    //       child: const Text(
+                    //         'Color:',
+                    //         style: TextStyle(
+                    //           fontSize: 22,
+                    //           fontWeight: FontWeight.w700,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: EdgeInsets.symmetric(
+                    //         vertical: mediaQuery.height * 0.01,
+                    //       ),
+                    //       child: product.color == null
+                    //           ? const Text(
+                    //               'No Color Available',
+                    //               style: TextStyle(
+                    //                 fontSize: 18,
+                    //                 fontWeight: FontWeight.w300,
+                    //               ),
+                    //             )
+                    //           : DropdownButton(
+                    //               value: color,
+                    //               hint: const Padding(
+                    //                 padding: EdgeInsets.only(left: 8.0),
+                    //                 child: Text('Choose Color'),
+                    //               ),
+                    //               items: product.color!
+                    //                   .split(",")
+                    //                   .toList()
+                    //                   .map((e) {
+                    //                 return DropdownMenuItem<String>(
+                    //                   value: e,
+                    //                   child: Text(e),
+                    //                 );
+                    //               }).toList(),
+                    //               onChanged: (c) {
+                    //                 setState(() {
+                    //                   color = c.toString();
+                    //                 });
+                    //               },
+                    //             ),
+                    //     ),
+                    //   ],
+                    // ),
+
                     Row(
                       children: [
                         Padding(
@@ -446,19 +519,22 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                     }
                                   },
                                   icon: const Icon(
-                                    Icons.minimize_outlined,
+                                    Icons.remove,
                                   ),
                                 ),
                                 Container(
                                   padding: EdgeInsets.all(
                                     mediaQuery.width * 0.02,
                                   ),
-                                  decoration: const BoxDecoration(boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 5.0,
-                                      color: Colors.black12,
-                                    ),
-                                  ], color: Colors.white),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          blurRadius: 3.4,
+                                          color: Colors.black12,
+                                        ),
+                                      ],
+                                      color: Colors.white),
                                   width: mediaQuery.width * 0.2,
                                   child: Center(
                                     child: Text(
