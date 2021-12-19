@@ -58,7 +58,7 @@ class AuthController extends GetxController {
       localStorage.setString('token', body['token']);
       tokens = localStorage.getString('token')!;
 
-      // Navigator.of(context).pushReplacementNamed(Navbar.routeName);
+      Navigator.of(context).pushReplacementNamed(Navbar.routeName);
     }
   }
 
