@@ -10,6 +10,7 @@ import '../controllers/productController.dart';
 import '../models/product.dart';
 import '../controllers/wishlistController.dart';
 import '../controllers/cartController.dart';
+import '../screens/cartScreen.dart';
 import '../models/cart.dart';
 
 class ProductViewScreen extends StatefulWidget {
@@ -106,13 +107,13 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
     var mediaQuery = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
-              height: mediaQuery.height * 0.85,
+              height: mediaQuery.height * 0.84,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +178,8 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Poppins',
                             ),
                           ),
                           backgroundColor: Colors.indigo,
@@ -220,11 +222,8 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                 horizontal: mediaQuery.width * 0.06),
                             child: Text(
                               product.name,
-                              maxLines: 3,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              maxLines: 2,
+                              style: Theme.of(context).textTheme.headline5,
                             ),
                           ),
                         ),
@@ -243,7 +242,46 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                         ),
                       ],
                     ),
+                    product.discountedPrice == null
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              top: mediaQuery.height * 0.01,
+                              bottom: mediaQuery.height * 0.01,
+                              left: mediaQuery.width * 0.06,
+                              right: mediaQuery.width * 0.03,
+                            ),
+                            child: Text(
+                              'Rs ${product.price}',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.only(
+                              top: mediaQuery.height * 0.01,
+                              bottom: mediaQuery.height * 0.01,
+                              left: mediaQuery.width * 0.06,
+                              right: mediaQuery.width * 0.03,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Rs ${product.price}',
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    'Rs ${product.discountedPrice}',
+                                    style:
+                                        Theme.of(context).textTheme.headline6,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -252,29 +290,22 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             left: mediaQuery.width * 0.06,
                             right: mediaQuery.width * 0.03,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Brand:',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             vertical: mediaQuery.height * 0.01,
                           ),
-                          child: Text(
-                            product.bandname,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                          child: Text(product.bandname,
+                              style: Theme.of(context).textTheme.subtitle1),
                         ),
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -283,12 +314,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             left: mediaQuery.width * 0.06,
                             right: mediaQuery.width * 0.03,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Size:',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                         Padding(
@@ -296,12 +324,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             vertical: mediaQuery.height * 0.01,
                           ),
                           child: product.size == null
-                              ? const Text(
+                              ? Text(
                                   'No Size Available',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
-                                  ),
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 )
                               : Row(
                                   children: product.size!
@@ -317,7 +342,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                           ChoiceChip(
                                             backgroundColor:
                                                 Colors.indigo.shade100,
-                                            labelStyle: TextStyle(
+                                            labelStyle: const TextStyle(
                                               color: Colors.white,
                                             ),
                                             selected: size.contains(e),
@@ -339,28 +364,11 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                     );
                                   }).toList(),
                                 ),
-                          // DropdownButton(
-                          //     value: size,
-                          //     hint: const Text('Choose Size'),
-                          //     items: product.size!
-                          //         .split(",")
-                          //         .toList()
-                          //         .map((e) {
-                          //       return DropdownMenuItem<String>(
-                          //         value: e,
-                          //         child: Text(e),
-                          //       );
-                          //     }).toList(),
-                          //     onChanged: (s) {
-                          //       setState(() {
-                          //         size = s.toString();
-                          //       });
-                          //     },
-                          //   ),
                         ),
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -369,12 +377,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             left: mediaQuery.width * 0.06,
                             right: mediaQuery.width * 0.03,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Color:',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                         Padding(
@@ -382,12 +387,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             vertical: mediaQuery.height * 0.01,
                           ),
                           child: product.color == null
-                              ? const Text(
+                              ? Text(
                                   'No Color Available',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
-                                  ),
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 )
                               : Row(
                                   children: product.color!
@@ -403,7 +405,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                           ChoiceChip(
                                             backgroundColor:
                                                 Colors.indigo.shade100,
-                                            labelStyle: TextStyle(
+                                            labelStyle: const TextStyle(
                                               color: Colors.white,
                                             ),
                                             selected: color.contains(e),
@@ -492,12 +494,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             left: mediaQuery.width * 0.06,
                             right: mediaQuery.width * 0.03,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Quantity',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                         Padding(
@@ -542,6 +541,8 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w400,
+                                        color: Colors.black,
+                                        fontFamily: 'Poppins',
                                       ),
                                     ),
                                   ),
@@ -565,6 +566,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -573,12 +575,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             left: mediaQuery.width * 0.06,
                             right: mediaQuery.width * 0.03,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Stock:',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                         Padding(
@@ -589,10 +588,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             product.stock == 0
                                 ? 'Out of Stock'
                                 : product.stock.toString(),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                       ],
@@ -601,12 +597,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                       padding: EdgeInsets.symmetric(
                           vertical: mediaQuery.height * 0.01,
                           horizontal: mediaQuery.width * 0.06),
-                      child: const Text(
+                      child: Text(
                         'Description',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: Theme.of(context).textTheme.subtitle2,
                       ),
                     ),
                     Padding(
@@ -615,113 +608,111 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                           horizontal: mediaQuery.width * 0.06),
                       child: Text(
                         product.description ?? 'No Description',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: mediaQuery.height * 0.08,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)),
-                boxShadow: [
-                  const BoxShadow(
-                    blurRadius: 4.0,
-                    color: Colors.black12,
+            product.stock != 0
+                ? Container(
+                    width: double.infinity,
+                    height: mediaQuery.height * 0.05,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: mediaQuery.width * 0.03),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          product.stock != 0
+                              ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    primary: Colors.yellow.shade800,
+                                  ),
+                                  onPressed: () {
+                                    var _cart = Cart(
+                                      userid: userid,
+                                      productid: productId,
+                                      quantity: quantity,
+                                      size: size,
+                                      color: color,
+                                    );
+                                    cartController
+                                        .addToCart(_cart, context)
+                                        .then((_) {
+                                      Navigator.of(context)
+                                          .pushNamed(CartScreen.routeName);
+                                    });
+                                    // cartController.fetchCart(userid.toString());
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '  Buy Now  ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: mediaQuery.width * 0.02),
+                                        child: Icon(
+                                          Icons.sell,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox(),
+                          product.stock != 0
+                              ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    var _cart = Cart(
+                                      userid: userid,
+                                      productid: productId,
+                                      quantity: quantity,
+                                      size: size,
+                                      color: color,
+                                    );
+                                    cartController.addToCart(_cart, context);
+                                    cartController.fetchCart(userid.toString());
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        onCart ? 'Update Cart' : 'Add To Cart',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: mediaQuery.width * 0.02),
+                                        child: Icon(
+                                          Icons.shopping_cart,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
+                    ),
                   )
-                ],
-              ),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: mediaQuery.width * 0.03),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    product.discountedPrice == null
-                        ? Text(
-                            'Rs ${product.price}',
-                            style: TextStyle(
-                              fontSize: mediaQuery.width * 0.05,
-                              color: Colors.red[800],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Rs ${product.price}',
-                                style: TextStyle(
-                                  fontSize: mediaQuery.width * 0.05,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  'Rs ${product.discountedPrice}',
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.width * 0.06,
-                                    color: Colors.red[800],
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                    product.stock != 0
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed: () {
-                              var _cart = Cart(
-                                userid: userid,
-                                productid: productId,
-                                quantity: quantity,
-                                size: size,
-                                color: color,
-                              );
-                              cartController.addToCart(_cart, context);
-                              cartController.fetchCart(userid.toString());
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  onCart ? 'Update Cart' : 'Add To Cart',
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.width * 0.05,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: mediaQuery.width * 0.02),
-                                  child: Icon(
-                                    Icons.shopping_cart,
-                                    size: mediaQuery.width * 0.05,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : SizedBox(),
-                  ],
-                ),
-              ),
-            ),
+                : const SizedBox(),
           ],
         ),
       ),

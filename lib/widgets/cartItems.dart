@@ -61,6 +61,9 @@ class _CartItemsState extends State<CartItems> {
           ),
           onDismissed: (direction) {
             cartController.deleteCart(widget.id, context);
+            // .then((_) {
+            //   Navigator.of(context).pushReplacementNamed(CartScreen.routeName);
+            // });
           },
           behavior: HitTestBehavior.translucent,
           direction: DismissDirection.endToStart,

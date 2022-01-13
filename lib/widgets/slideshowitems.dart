@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SlideShowItem extends StatelessWidget {
@@ -18,8 +19,12 @@ class SlideShowItem extends StatelessWidget {
         width: double.infinity,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Image.network(
-            'https://hamroelectronics.com.np/images/banner/mobile/$url',
+          child: CachedNetworkImage(
+            imageUrl:
+                'https://hamroelectronics.com.np/images/banner/mobile/$url',
+            placeholder: (context, url) => Center(
+              child: Image.asset('assets/logo/logo.png'),
+            ),
             fit: BoxFit.fill,
           ),
         ),

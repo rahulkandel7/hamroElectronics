@@ -8,8 +8,8 @@ class StatusController extends GetxController {
   var status = <Order>[].obs;
 
   fetchStatus(String uid) async {
-    final url =
-        Uri.parse("https://hamroelectronics.com.np/api/order/show/$uid");
+    final url = Uri.parse(
+        "https://hamroelectronics.com.np/api/596810BITS/order/show/$uid");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});

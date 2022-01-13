@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/cart.dart';
 
@@ -11,12 +12,28 @@ class CartController extends GetxController {
 
   var total = 0.obs;
 
+  String tokens = "";
+
   var tc = 0.obs;
+
+  var length = 0.obs;
 
   static var client = http.Client();
 
+  getToken() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    tokens = localStorage.getString('token')!;
+  }
+
+  @override
+  void onInit() {
+    getToken();
+    super.onInit();
+  }
+
   addToCart(Cart cart, BuildContext context) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/cart');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/cart');
 
     final jsons = {
       "userid": cart.userid.toString(),
@@ -37,19 +54,19 @@ class CartController extends GetxController {
         SnackBar(
           content: Text(
             response.body,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),
       );
     } else {
       return ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
             'Something went wrong',
             style: TextStyle(
@@ -57,7 +74,7 @@ class CartController extends GetxController {
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),
@@ -66,51 +83,53 @@ class CartController extends GetxController {
   }
 
   fetchCart(String id) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/cart/$id');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/cart/$id');
+
+    print('tokens');
 
     final response =
         await client.get(url, headers: {'Accept': 'application/json'});
 
     final _carts = <Cart>[];
+    print(response.body);
 
-    // final body = json.decode(response.body) as List;
-    List body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List body = json.decode(response.body);
 
-    body.forEach((el) {
-      _carts.insert(
-        0,
-        Cart(
-          id: el["id"],
-          userid: el["userid"],
-          productid: el["productid"],
-          quantity: el["quantity"],
-          size: el["size"],
-          color: el["color"],
-        ),
-      );
-    });
+      print(body);
 
-    // body.forEach((key, value) {
-    //   _carts.insert(
-    //     0,
-    //     Cart(
-    //       userid: value["userid"],
-    //       productid: value["productid"],
-    //       quantity: value["quantity"],
-    //       id: value["id"],
-    //       size: value["size"],
-    //       color: value["color"],
-    //     ),
-    //   );
-    // });
+      body.forEach((el) {
+        _carts.insert(
+          0,
+          Cart(
+            id: el["id"],
+            userid: el["userid"],
+            productid: el["productid"],
+            quantity: el["quantity"],
+            size: el["size"],
+            color: el["color"],
+          ),
+        );
+      });
 
-    carts.value = _carts;
-    tc.value = _carts.length;
+      carts.value = _carts;
+      length.value = _carts.length;
+
+      print('I am cart');
+      print(length.value);
+    } else {
+      print('I am Error');
+
+      print(response.body);
+
+      print('I am Error');
+    }
   }
 
   deleteCart(int? id, BuildContext context) async {
-    final url =
-        Uri.parse('https://hamroelectronics.com.np/api/cart/delete/$id');
+    final url = Uri.parse(
+        'https://hamroelectronics.com.np/api/596810BITS/cart/delete/$id');
 
     final response =
         await client.delete(url, headers: {'Accept': 'application/json'});
@@ -122,19 +141,19 @@ class CartController extends GetxController {
         SnackBar(
           content: Text(
             response.body,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),
       );
     } else {
       return ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
             'Something went wrong',
             style: TextStyle(
@@ -142,7 +161,7 @@ class CartController extends GetxController {
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),

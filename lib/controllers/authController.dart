@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/auth_screen.dart';
@@ -15,7 +14,8 @@ class AuthController extends GetxController {
   String tokens = "";
 
   register(User user, BuildContext context, String token) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/register');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/register');
 
     final jsons = {
       'name': user.name,
@@ -63,7 +63,8 @@ class AuthController extends GetxController {
   }
 
   login(String email, String password, BuildContext context) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/login');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/login');
 
     final jsons = {'email': email, 'password': password};
 
@@ -98,7 +99,8 @@ class AuthController extends GetxController {
   }
 
   logout(BuildContext context) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/logout');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/logout');
 
     await http.post(url, headers: {
       'Authorization': 'Bearer $tokens',
@@ -113,8 +115,8 @@ class AuthController extends GetxController {
   }
 
   forgetPassword(String email) async {
-    final url =
-        Uri.parse("https://hamroelectronics.com.np/api/forgot-password");
+    final url = Uri.parse(
+        "https://hamroelectronics.com.np/api/596810BITS/forgot-password");
 
     final jsons = {'email': email};
 

@@ -42,9 +42,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
-          title: Text('My Orders'),
-          bottom: TabBar(
+          title: const Text(
+            'My Orders',
+            style: TextStyle(fontFamily: 'Poppins'),
+          ),
+          bottom: const TabBar(
             tabs: [
               Tab(
                 text: 'Active Order',
@@ -66,7 +70,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         .toList()
                         .length ==
                     0
-                ? const Center(child: Text('No Ordered items yet'))
+                ? Center(
+                    child: Text(
+                    'No Ordered items yet',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ))
                 : ListView.builder(
                     itemBuilder: (ctx, i) {
                       var stat = statusController.status
@@ -172,7 +180,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         .toList()
                         .length ==
                     0
-                ? const Center(child: Text('No Completed Orders yet'))
+                ? Center(
+                    child: Text(
+                    'No Completed Orders yet',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ))
                 : ListView.builder(
                     itemBuilder: (ctx, i) {
                       var stat = statusController.status
@@ -275,7 +287,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         .toList()
                         .length ==
                     0
-                ? const Center(child: Text('No Cancelled items yet'))
+                ? Center(
+                    child: Text(
+                    'No Cancelled items yet',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ))
                 : ListView.builder(
                     itemBuilder: (ctx, i) {
                       var stat = statusController.status

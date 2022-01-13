@@ -105,12 +105,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text(
           'Checkout',
           style: TextStyle(
             fontSize: 29,
             color: Colors.white,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,
@@ -121,15 +123,17 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: mediaQuery.height * 0.02),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Billing Info',
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.indigo,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.headline4,
                 ),
+              ),
+            ),
+            Center(
+              child: Text(
+                'Total Products: ${cartController.length}',
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             Padding(
@@ -162,6 +166,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         decoration: InputDecoration(
                           labelText: 'Full Name',
                           hintText: 'John Doe',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           errorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               width: 1.0,
@@ -183,6 +188,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
+                            fontFamily: 'Poppins',
                           ),
                           prefixIcon: const Icon(
                             Icons.person,
@@ -240,6 +246,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         },
                         decoration: InputDecoration(
                           hintText: 'SahidChowk, Narayanghat',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           labelText: 'Shipping Address',
                           errorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -272,6 +279,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           isDense: true,
                           floatingLabelStyle: const TextStyle(
                             fontSize: 18,
+                            fontFamily: 'Poppins',
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -316,6 +324,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         },
                         decoration: InputDecoration(
                           labelText: 'Phone Number',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           errorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               width: 1.0,
@@ -337,10 +346,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
+                            fontFamily: 'Poppins',
                           ),
-                          prefixIcon: const Icon(
+                          prefixIcon: Icon(
                             Icons.phone,
-                            color: Colors.indigo,
+                            color:
+                                Get.isDarkMode ? Colors.white : Colors.indigo,
                           ),
                           contentPadding: const EdgeInsets.all(0),
                           disabledBorder: InputBorder.none,
@@ -375,6 +386,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: mediaQuery.height * 0.02),
                       child: DropdownButtonFormField(
+                        style: Theme.of(context).textTheme.bodyText1,
+                        dropdownColor: Theme.of(context).backgroundColor,
                         validator: (value) {
                           if (areaId == 0) {
                             return "Select Sipping Area";
@@ -388,7 +401,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             child: Row(
                               children: [
                                 const Icon(Icons.place),
-                                Text(ele.name),
+                                Text(
+                                  ele.name,
+                                  style: const TextStyle(fontFamily: 'Poppins'),
+                                ),
                               ],
                             ),
                           );
@@ -403,10 +419,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         },
                         decoration: InputDecoration(
                           hintText: 'Shipping Area',
-                          hintStyle: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.indigo,
-                          ),
+                          hintStyle: Theme.of(context).textTheme.subtitle1,
                           contentPadding:
                               EdgeInsets.only(left: mediaQuery.width * 0.03),
                           enabledBorder: OutlineInputBorder(
@@ -423,23 +436,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       padding: EdgeInsets.only(top: mediaQuery.height * 0.02),
                       child: Row(
                         children: [
-                          const Text(
+                          Text(
                             'Order Amount:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.indigo,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                           Padding(
                             padding:
                                 EdgeInsets.only(left: mediaQuery.width * 0.02),
                             child: Text(
                               'Rs $orderedPrice',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.indigo,
-                              ),
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                         ],
@@ -456,23 +462,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       padding: EdgeInsets.only(top: mediaQuery.height * 0.02),
                       child: Row(
                         children: [
-                          const Text(
+                          Text(
                             'Delivery Charge:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.indigo,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                           Padding(
                             padding:
                                 EdgeInsets.only(left: mediaQuery.width * 0.02),
                             child: Text(
                               'Rs $charge',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.indigo,
-                              ),
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                         ],
@@ -488,23 +487,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       padding: EdgeInsets.only(top: mediaQuery.height * 0.02),
                       child: Row(
                         children: [
-                          const Text(
+                          Text(
                             'Total Amount:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.indigo,
-                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                           Padding(
                             padding:
                                 EdgeInsets.only(left: mediaQuery.width * 0.02),
                             child: Text(
                               'Rs ${orderedPrice + charge}',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.indigo,
-                              ),
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                         ],
@@ -519,12 +511,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Payment Method:',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.indigo,
-                          ),
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -538,14 +527,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 b = false;
                               },
                             ),
-                            const FittedBox(
+                            FittedBox(
                               fit: BoxFit.fill,
                               child: Text(
                                 'Cash on Delivery',
-                                style: TextStyle(
-                                  // fontSize: 18,
-                                  color: Colors.indigo,
-                                ),
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                             ),
                           ],
@@ -560,6 +546,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               onPressed: () => submitOrder(),
               child: const Text(
                 'Place Order',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                ),
               ),
             ),
           ],

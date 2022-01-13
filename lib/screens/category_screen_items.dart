@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/categoryController.dart';
 import '../controllers/productController.dart';
 import '../models/category.dart';
-import '../widgets/homeproduct.dart';
 
 class CategoryScreenItems extends StatefulWidget {
   static const routeName = '/cat-items';
@@ -48,12 +47,14 @@ class _CategoryScreenItemsState extends State<CategoryScreenItems> {
     Category category = categoryController.findCategory(cid);
     var product = productController.fetchCategoryProduct(cid);
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text(
           category.name,
           style: TextStyle(
             fontSize: 29,
             color: Colors.white,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,

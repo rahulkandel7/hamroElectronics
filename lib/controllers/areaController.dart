@@ -9,7 +9,8 @@ class AreaController extends GetxController {
   var area = <Area>[].obs;
 
   fetchArea() async {
-    final url = Uri.parse("https://hamroelectronics.com.np/api/area");
+    final url =
+        Uri.parse("https://hamroelectronics.com.np/api/596810BITS/area");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});

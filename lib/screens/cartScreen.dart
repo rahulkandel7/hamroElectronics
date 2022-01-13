@@ -28,7 +28,7 @@ class _CartScreenState extends State<CartScreen> {
 
   int totalPrice = 0;
 
-  bool showPrice = false;
+  bool showPrice = true;
 
   _getUserID() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -42,61 +42,36 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
-  _onRefresh() async {
-    await cartController.fetchCart(userId.toString()).then((_) {
-      setState(() {
-        showPrice = true;
-        cartController.total.value = 0;
-        for (var element in cartController.carts) {
-          Product product = productController.findProduct(element.productid);
-          if (product.discountedPrice != null) {
-            cartController.total.value = cartController.total.value +
-                (product.discountedPrice!.toInt() * element.quantity);
-          } else {
-            cartController.total.value =
-                cartController.total.value + (product.price * element.quantity);
-          }
-        }
-      });
-    });
+  Future<void> _onRefresh() async {
+    cartController.fetchCart(userId.toString());
   }
 
   @override
   void initState() {
     super.initState();
     _getUserID();
-    cartController.fetchCart(userId.toString()).then((_) {
-      cartController.total.value = 0;
-      for (var element in cartController.carts) {
-        Product product = productController.findProduct(element.productid);
-        if (product.discountedPrice != null) {
-          cartController.total.value = cartController.total.value +
-              (product.discountedPrice!.toInt() * element.quantity);
-          print('dis');
-        } else {
-          cartController.total.value =
-              cartController.total.value + (product.price * element.quantity);
-        }
-      }
-    });
     areaController.fetchArea();
+    print('Me cart created');
   }
 
   @override
   void dispose() {
     super.dispose();
     cartController.total.value = 0;
+    print('Cart disposed');
   }
 
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text(
           'My Cart',
           style: TextStyle(
             fontSize: 25,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,
@@ -106,17 +81,219 @@ class _CartScreenState extends State<CartScreen> {
         future: cartController.fetchCart(userId.toString()),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            var cartList = Expanded(
+              // height: mediaQuery.height * 0.83,
+              child: ListView.builder(
+                itemCount: cartController.carts.length,
+                itemBuilder: (context, index) {
+                  Product product = productController
+                      .findProduct(cartController.carts[index].productid);
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                            ProductViewScreen.routeName,
+                            arguments: product.id);
+                      },
+                      child: Dismissible(
+                        key: UniqueKey(),
+                        background: Container(
+                          alignment: AlignmentDirectional.centerEnd,
+                          padding:
+                              EdgeInsets.only(right: mediaQuery.width * 0.05),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red,
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
+                        onDismissed: (direction) {
+                          cartController
+                              .deleteCart(
+                                  cartController.carts[index].id, context)
+                              .then((_) {
+                            setState(() {});
+                          });
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        direction: DismissDirection.endToStart,
+                        dragStartBehavior: DragStartBehavior.down,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 4,
+                                offset: const Offset(0, 4),
+                                color: Theme.of(context).shadowColor,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: mediaQuery.height * 0.1,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    10,
+                                  ),
+                                  child: FadeInImage.assetNetwork(
+                                      placeholder: 'assets/logo/logo.png',
+                                      image:
+                                          'https://hamroelectronics.com.np/images/product/${product.photoPath1}'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: mediaQuery.width * 0.6,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: mediaQuery.width * 0.05),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                        maxLines: 2,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: mediaQuery.height * 0.01),
+                                        child: Row(
+                                          children: [
+                                            product.discountedPrice == null
+                                                ? Text(
+                                                    'Rs ${product.price}',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.red[800],
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  )
+                                                : Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        'Rs ${product.price}',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: mediaQuery
+                                                                        .width *
+                                                                    0.01),
+                                                        child: Text(
+                                                          'Rs ${product.discountedPrice}',
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.red[800],
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontFamily:
+                                                                'Poppins',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: mediaQuery.height * 0.01),
+                                        child: Row(
+                                          children: [
+                                            product.discountedPrice == null
+                                                ? Text(
+                                                    'Sub-Total Rs ${product.price * cartController.carts[index].quantity}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.red[800],
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  )
+                                                : Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: mediaQuery
+                                                                        .width *
+                                                                    0.01),
+                                                        child: Text(
+                                                          'Sub-Total: Rs ${product.discountedPrice! * cartController.carts[index].quantity}',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.red[800],
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Qty: ${cartController.carts[index].quantity}',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
             return RefreshIndicator(
               onRefresh: () => _onRefresh(),
               child: cartController.carts.isEmpty
                   ? Center(
                       child: Image.asset('assets/CartEmpty.png'),
                     )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  : Stack(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(
-                          height: mediaQuery.height * 0.7,
+                          // height: mediaQuery.height * 0.7,
                           child: Column(
                             children: [
                               Padding(
@@ -127,403 +304,215 @@ class _CartScreenState extends State<CartScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.red.shade300,
+                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: mediaQuery.height * 0.66,
-                                child: ListView.builder(
-                                  itemCount: cartController.carts.length,
-                                  itemBuilder: (context, index) {
-                                    Product product = productController
-                                        .findProduct(cartController
-                                            .carts[index].productid);
-
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pushNamed(
-                                              ProductViewScreen.routeName,
-                                              arguments: product.id);
-                                        },
-                                        child: Dismissible(
-                                          key: UniqueKey(),
-                                          background: Container(
-                                            alignment:
-                                                AlignmentDirectional.centerEnd,
-                                            padding: EdgeInsets.only(
-                                                right: mediaQuery.width * 0.05),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.red,
-                                            ),
-                                            child: const Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                              size: 32,
-                                            ),
-                                          ),
-                                          onDismissed: (direction) {
-                                            cartController.deleteCart(
-                                                cartController.carts[index].id,
-                                                context);
-
-                                            _onRefresh().then((_) {
-                                              setState(() {
-                                                showPrice = false;
-                                                print(showPrice);
-                                              });
-                                            });
-                                          },
-                                          behavior: HitTestBehavior.translucent,
-                                          direction:
-                                              DismissDirection.endToStart,
-                                          dragStartBehavior:
-                                              DragStartBehavior.down,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 4,
-                                                  offset: const Offset(0, 4),
-                                                  color: Colors.grey.shade300,
-                                                ),
-                                              ],
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width:
-                                                      mediaQuery.height * 0.1,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      10,
-                                                    ),
-                                                    child: FadeInImage.assetNetwork(
-                                                        placeholder:
-                                                            'assets/logo/logo.png',
-                                                        image:
-                                                            'https://hamroelectronics.com.np/images/product/${product.photoPath1}'),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: mediaQuery.width * 0.6,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: mediaQuery.width *
-                                                            0.05),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          product.name,
-                                                          style: TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                          maxLines: 2,
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              top: mediaQuery
-                                                                      .height *
-                                                                  0.01),
-                                                          child: Row(
-                                                            children: [
-                                                              product.discountedPrice ==
-                                                                      null
-                                                                  ? Text(
-                                                                      'Rs ${product.price}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        color: Colors
-                                                                            .red[800],
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                      ),
-                                                                    )
-                                                                  : Row(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .end,
-                                                                      children: [
-                                                                        Text(
-                                                                          'Rs ${product.price}',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight:
-                                                                                FontWeight.w500,
-                                                                            decoration:
-                                                                                TextDecoration.lineThrough,
-                                                                          ),
-                                                                        ),
-                                                                        Padding(
-                                                                          padding:
-                                                                              EdgeInsets.only(left: mediaQuery.width * 0.01),
-                                                                          child:
-                                                                              Text(
-                                                                            'Rs ${product.discountedPrice}',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 16,
-                                                                              color: Colors.red[800],
-                                                                              fontWeight: FontWeight.w600,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              top: mediaQuery
-                                                                      .height *
-                                                                  0.01),
-                                                          child: Row(
-                                                            children: [
-                                                              product.discountedPrice ==
-                                                                      null
-                                                                  ? Text(
-                                                                      'Sub-Total Rs ${product.price * cartController.carts[index].quantity}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        color: Colors
-                                                                            .red[800],
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                      ),
-                                                                    )
-                                                                  : Row(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .end,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding:
-                                                                              EdgeInsets.only(left: mediaQuery.width * 0.01),
-                                                                          child:
-                                                                              Text(
-                                                                            'Sub-Total: Rs ${product.discountedPrice! * cartController.carts[index].quantity}',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 16,
-                                                                              color: Colors.red[800],
-                                                                              fontWeight: FontWeight.w600,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    // IconButton(
-                                                    //   onPressed: () {
-                                                    //     if (cartController
-                                                    //             .carts[index].quantity <
-                                                    //         product.stock) {
-                                                    //       setState(() {
-                                                    //         quantity++;
-                                                    //       });
-                                                    //     }
-                                                    //   },
-                                                    //   icon: Icon(
-                                                    //     Icons.add,
-                                                    //   ),
-                                                    // ),
-                                                    Text(
-                                                        'Qty: ${cartController.carts[index].quantity}'),
-                                                    // IconButton(
-                                                    //   onPressed: () {
-                                                    //     if (quantity != 1) {
-                                                    //       setState(() {
-                                                    //         quantity--;
-                                                    //       });
-                                                    //     }
-                                                    //   },
-                                                    //   icon: Icon(
-                                                    //     Icons.minimize,
-                                                    //   ),
-                                                    // ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                              cartList,
                             ],
                           ),
                         ),
-                        Container(
-                          height: mediaQuery.height * 0.18,
-                          alignment: Alignment.topCenter,
-                          padding:
-                              EdgeInsets.only(top: mediaQuery.height * 0.01),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
+                        Positioned(
+                          bottom: mediaQuery.height * 0.08,
+                          right: mediaQuery.width * 0.03,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  30,
+                                ),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 3,
-                                  offset: const Offset(0, -3),
-                                  color: Colors.grey.shade300,
-                                ),
-                              ]),
-                          width: double.infinity,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                              bottom: 40,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Total:',
-                                      style: TextStyle(
-                                        fontSize: mediaQuery.width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    showPrice
-                                        ? Obx(() {
-                                            return Text(
-                                              ' Rs ${cartController.total.value}',
-                                              style: TextStyle(
-                                                fontSize:
-                                                    mediaQuery.width * 0.06,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            );
-                                          })
-                                        : const Text(
-                                            ' Rs XXXX',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                  ],
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.indigo,
-                                    elevation: 0,
-                                    enableFeedback: true,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        30,
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                                secondaryAnimation) =>
-                                            CheckOutScreen(),
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          const begin = Offset(1.0, 0.0);
-                                          const end = Offset.zero;
-                                          const curve = Curves.linear;
+                            onPressed: () {
+                              setState(() {
+                                cartController.total.value = 0;
+                                for (var element in cartController.carts) {
+                                  Product product = productController
+                                      .findProduct(element.productid);
+                                  if (product.discountedPrice != null) {
+                                    cartController.total.value =
+                                        cartController.total.value +
+                                            (product.discountedPrice!.toInt() *
+                                                element.quantity);
+                                  } else {
+                                    cartController.total.value =
+                                        cartController.total.value +
+                                            (product.price * element.quantity);
+                                  }
+                                }
+                              });
+                              cartController.tc.value =
+                                  cartController.total.value;
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      CheckOutScreen(),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    const begin = Offset(1.0, 0.0);
+                                    const end = Offset.zero;
+                                    const curve = Curves.linear;
 
-                                          var tween = Tween(
-                                                  begin: begin, end: end)
-                                              .chain(CurveTween(curve: curve));
+                                    var tween = Tween(begin: begin, end: end)
+                                        .chain(CurveTween(curve: curve));
 
-                                          return SlideTransition(
-                                            position: animation.drive(tween),
-                                            child: child,
-                                          );
-                                        },
-                                      ),
+                                    return SlideTransition(
+                                      position: animation.drive(tween),
+                                      child: child,
                                     );
-                                    setState(() {
-                                      cartController.total.value = 0;
-                                      for (var element
-                                          in cartController.carts) {
-                                        Product product = productController
-                                            .findProduct(element.productid);
-                                        if (product.discountedPrice != null) {
-                                          cartController.total.value =
-                                              cartController.total.value +
-                                                  (product.discountedPrice!
-                                                          .toInt() *
-                                                      element.quantity);
-                                          print('dis');
-                                        } else {
-                                          cartController.total.value =
-                                              cartController.total.value +
-                                                  (product.price *
-                                                      element.quantity);
-                                        }
-                                      }
-                                      cartController.tc.value =
-                                          cartController.total.value;
-                                    });
                                   },
-                                  child: Row(
-                                    children: const [
-                                      Text(
-                                        'CheckOut',
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 8.0),
-                                        child: Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                          size: 18,
-                                        ),
-                                      ),
-                                    ],
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: mediaQuery.width * 0.02),
+                                  child: const Text(
+                                    'Checkout',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Poppins',
+                                    ),
                                   ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
                                 ),
                               ],
                             ),
                           ),
                         ),
+
+                        // Container(
+                        //   // height: mediaQuery.height * 0.12,
+                        //   alignment: Alignment.centerRight,
+                        //   margin: EdgeInsets.only(
+                        //     bottom: mediaQuery.height * 0.06,
+                        //     right: mediaQuery.width * 0.04,
+                        //   ),
+                        //   width: double.infinity,
+                        //   child:
+                        //   Positioned(
+                        //     bottom: mediaQuery.height * 0.03,
+                        //     child: Container(
+                        //       decoration: BoxDecoration(
+                        //         shape: BoxShape.circle,
+                        //         color: Colors.indigo,
+                        //       ),
+                        //       child: IconButton(
+                        //         onPressed: () {
+                        //           Navigator.of(context).push(
+                        //             PageRouteBuilder(
+                        //               pageBuilder: (context, animation,
+                        //                       secondaryAnimation) =>
+                        //                   CheckOutScreen(),
+                        //               transitionsBuilder: (context, animation,
+                        //                   secondaryAnimation, child) {
+                        //                 const begin = Offset(1.0, 0.0);
+                        //                 const end = Offset.zero;
+                        //                 const curve = Curves.linear;
+
+                        //                 var tween = Tween(
+                        //                         begin: begin, end: end)
+                        //                     .chain(CurveTween(curve: curve));
+
+                        //                 return SlideTransition(
+                        //                   position: animation.drive(tween),
+                        //                   child: child,
+                        //                 );
+                        //               },
+                        //             ),
+                        //           );
+                        //           setState(() {
+                        //             cartController.total.value = 0;
+                        //             for (var element in cartController.carts) {
+                        //               Product product = productController
+                        //                   .findProduct(element.productid);
+                        //               if (product.discountedPrice != null) {
+                        //                 cartController.total.value =
+                        //                     cartController.total.value +
+                        //                         (product.discountedPrice!
+                        //                                 .toInt() *
+                        //                             element.quantity);
+                        //                 print('dis');
+                        //               } else {
+                        //                 cartController.total.value =
+                        //                     cartController.total.value +
+                        //                         (product.price *
+                        //                             element.quantity);
+                        //               }
+                        //             }
+                        //             cartController.tc.value =
+                        //                 cartController.total.value;
+                        //           });
+                        //         },
+                        //         icon: Icon(
+                        //           Icons.arrow_forward,
+                        //           color: Colors.white,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+
+                        // ),
                       ],
                     ),
             );
           } else {
-            return const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 1.0,
+            return SizedBox(
+              height: mediaQuery.height * 9,
+              child: ListView.builder(
+                itemBuilder: (ctx, i) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: mediaQuery.width * 0.3,
+                          height: mediaQuery.height * 0.1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 10),
+                              width: mediaQuery.width * 0.6,
+                              height: mediaQuery.height * 0.03,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ),
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 10, top: 5),
+                              width: mediaQuery.width * 0.4,
+                              height: mediaQuery.height * 0.03,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ),
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+                itemCount: 8,
               ),
             );
           }

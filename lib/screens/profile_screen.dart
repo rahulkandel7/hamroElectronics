@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:hamro_electronics/controllers/statusController.dart';
+import 'package:hamro_electronics/controllers/themeController.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,6 +13,7 @@ import '../controllers/authController.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/orders_screen.dart';
 import '../screens/edit_profile_screen.dart';
+import '../controllers/statusController.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -24,9 +25,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final authController = Get.put(AuthController());
   final statusController = Get.put(StatusController());
+  final themeController = Get.put(ThemeController());
 
-  late String uname;
-  late String uphoto;
+  String? uname;
+  String? uphoto;
   String? uid;
 
   void _launchURL(String link) async {
@@ -80,16 +82,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: EdgeInsets.only(left: mediaQuery.width * 0.04),
                   child: Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios_outlined)
+          const Icon(Icons.arrow_forward_ios_outlined)
         ],
       ),
     );
@@ -99,6 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -113,14 +113,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       maxRadius: mediaQuery.width * 0.2,
                       backgroundImage: NetworkImage(
-                          'https://hamroelectronics.com.np/images/users/$uphoto'),
+                        'https://hamroelectronics.com.np/images/users/$uphoto',
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: mediaQuery.height * 0.01),
                       child: Text(
-                        uname,
-                        style: TextStyle(
+                        uname ?? "",
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -130,34 +131,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
+
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  EditProfileScreen(),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            const begin = Offset(1.0, 0.0);
-                            const end = Offset.zero;
-                            const curve = Curves.ease;
-
-                            var tween = Tween(begin: begin, end: end)
-                                .chain(CurveTween(curve: curve));
-
-                            return SlideTransition(
-                              position: animation.drive(tween),
-                              child: child,
-                            );
-                          },
+                padding: EdgeInsets.only(top: mediaQuery.height * 0.02),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: mediaQuery.height * 0.01,
+                    horizontal: mediaQuery.width * 0.05,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.brightness_4_outlined,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: mediaQuery.width * 0.04),
+                              child: Text(
+                                'Light Mode',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    child: options(context, Icons.person, 'Edit profile')),
+                      ),
+                      Obx(() {
+                        return Switch(
+                          value: themeController.isLightTheme.value,
+                          onChanged: (val) {
+                            themeController.isLightTheme.value = val;
+                            Get.changeThemeMode(
+                              themeController.isLightTheme.value
+                                  ? ThemeMode.light
+                                  : ThemeMode.dark,
+                            );
+                            themeController.saveThemeStatus();
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                ),
               ),
+
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            EditProfileScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: options(context, Icons.person, 'Edit profile')),
               InkWell(
                   onTap: () {
                     Navigator.of(context).push(
@@ -207,6 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child:
                       options(context, Icons.notifications, 'Notifications')),
+
               InkWell(
                 onTap: () {
                   _launchURL('privacy-policy');
@@ -245,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.logout,
                             ),
                             Padding(
@@ -253,10 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   left: mediaQuery.width * 0.04),
                               child: Text(
                                 'Logout',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
                           ],

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hamro_electronics/controllers/notificationController.dart';
+
+import '../controllers/notificationController.dart';
 
 class NotificationScreen extends StatelessWidget {
   static const routeName = '/notifications';
 
-  final notificationController = Get.put(NotificationController());
+  NotificationScreen({Key? key}) : super(key: key);
+
+  final notificationController = Get.find<NotificationController>();
 
   Future<void> _onrefresh() async {
     await notificationController.fetchNotification();
@@ -15,8 +18,12 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: const Text(
+          'Notifications',
+          style: TextStyle(fontFamily: 'Poppins'),
+        ),
       ),
       body: FutureBuilder(
         future: notificationController.fetchNotification(),
@@ -36,13 +43,13 @@ class NotificationScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).backgroundColor,
                                 borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
                                     blurRadius: 4,
                                     offset: Offset(4, 4),
-                                    color: Colors.grey.shade300,
+                                    color: Theme.of(context).shadowColor,
                                   ),
                                 ],
                               ),
@@ -68,11 +75,10 @@ class NotificationScreen extends StatelessWidget {
                                       child: Text(
                                         notificationController
                                             .notification[i].title,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        maxLines: 3,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
                                       ),
                                     ),
                                   ),
@@ -86,9 +92,9 @@ class NotificationScreen extends StatelessWidget {
                                         notificationController
                                             .notification[i].description,
                                         maxLines: 4,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
                                       ),
                                     ),
                                   ),
@@ -102,9 +108,9 @@ class NotificationScreen extends StatelessWidget {
                                         notificationController
                                             .notification[i].date,
                                         textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
                                       ),
                                     ),
                                   ),
@@ -121,9 +127,56 @@ class NotificationScreen extends StatelessWidget {
               ),
             );
           } else {
-            return const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 1.0,
+            return SizedBox(
+              height: mediaQuery.height * 9,
+              child: ListView.builder(
+                itemBuilder: (ctx, i) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: mediaQuery.width * 0.3,
+                          height: mediaQuery.height * 0.1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 10),
+                              width: mediaQuery.width * 0.6,
+                              height: mediaQuery.height * 0.03,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ),
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 10, top: 5),
+                              width: mediaQuery.width * 0.4,
+                              height: mediaQuery.height * 0.03,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  10,
+                                ),
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+                itemCount: 8,
               ),
             );
           }

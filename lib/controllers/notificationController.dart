@@ -8,7 +8,8 @@ class NotificationController extends GetxController {
   var notification = <Notification>[].obs;
 
   fetchNotification() async {
-    final url = Uri.parse("https://hamroelectronics.com.np/api/notification");
+    final url = Uri.parse(
+        "https://hamroelectronics.com.np/api/596810BITS/notification");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});
@@ -30,5 +31,7 @@ class NotificationController extends GetxController {
 
       notification.value = _notification;
     });
+
+    print('I am notification');
   }
 }

@@ -95,12 +95,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text(
           'Edit Profile',
           style: TextStyle(
             fontSize: 29,
             color: Colors.white,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,
@@ -120,13 +122,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: mediaQuery.height * 0.02),
-                      child: const Text(
+                      child: Text(
                         'Edit Info',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.indigo,
-                        ),
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
                     Padding(
@@ -161,9 +159,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           ),
                           labelText: 'Full Name',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
+                            fontFamily: 'Poppins',
                           ),
                           prefixIcon: const Icon(
                             Icons.person,
@@ -229,6 +229,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           ),
                           labelText: 'Email Address',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
@@ -306,6 +307,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               10,
                             ),
                           ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
@@ -315,6 +317,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: Colors.indigo,
                           ),
                           prefixText: '+977-',
+                          prefixStyle: Theme.of(context).textTheme.bodyText2,
                           contentPadding: const EdgeInsets.all(0),
                           disabledBorder: InputBorder.none,
                           isDense: true,
@@ -370,6 +373,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               10,
                             ),
                           ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               width: 1.0,
@@ -420,13 +424,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           vertical: mediaQuery.height * 0.02),
-                      child: const Text(
+                      child: Text(
                         'Change Password',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.indigo,
-                        ),
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
                     //Password Field
@@ -458,6 +458,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           fontWeight: FontWeight.w600,
                           color: Colors.indigo[300],
                         ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                         prefixIcon: const Icon(
                           Icons.lock,
                           color: Colors.indigo,
@@ -508,6 +509,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               10,
                             ),
                           ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           focusedErrorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               width: 1.0,
@@ -592,6 +594,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               10,
                             ),
                           ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           labelStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.indigo[300],
@@ -652,6 +655,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 'Update Profile',
                                 style: TextStyle(
                                   fontSize: 16,
+                                  fontFamily: 'Poppins',
                                 ),
                               ),
                             ),

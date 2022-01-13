@@ -51,6 +51,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text(
           'My Wishlist',
@@ -75,7 +76,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 4.5 / 7,
+                          childAspectRatio: 4.4 / 7,
                           mainAxisSpacing: 5,
                           crossAxisSpacing: 1,
                         ),
@@ -96,12 +97,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: const [
+                                  color: Theme.of(context).backgroundColor,
+                                  boxShadow: [
                                     BoxShadow(
                                       blurRadius: 5,
-                                      color: Colors.black12,
-                                      offset: Offset(5, 4),
+                                      color: Theme.of(context).shadowColor,
+                                      offset: const Offset(5, 4),
                                     )
                                   ],
                                   borderRadius: BorderRadius.circular(10),
@@ -135,10 +136,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                             product.name,
                                             maxLines: 2,
                                             overflow: TextOverflow.fade,
-                                            style: TextStyle(
-                                              fontSize: mediaQuery.width * 0.05,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1,
                                           ),
                                         ),
                                         Padding(
@@ -150,43 +150,51 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                                 'Rs ${product.price}',
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      product.discountedPrice !=
-                                                              null
-                                                          ? mediaQuery.width *
-                                                              0.04
-                                                          : mediaQuery.width *
-                                                              0.05,
-                                                  color:
-                                                      product.discountedPrice !=
-                                                              null
-                                                          ? Colors.grey[700]
-                                                          : Colors.red[900],
-                                                  fontWeight: FontWeight.w500,
-                                                  decoration:
-                                                      product.discountedPrice !=
-                                                              null
-                                                          ? TextDecoration
-                                                              .lineThrough
-                                                          : TextDecoration.none,
-                                                ),
+                                                style:
+                                                    product.discountedPrice !=
+                                                            null
+                                                        ? Theme.of(context)
+                                                            .textTheme
+                                                            .caption
+                                                        : Theme.of(context)
+                                                            .textTheme
+                                                            .headline6,
+                                                // TextStyle(
+                                                //   fontSize:
+                                                //       product.discountedPrice !=
+                                                //               null
+                                                //           ? mediaQuery.width *
+                                                //               0.04
+                                                //           : mediaQuery.width *
+                                                //               0.05,
+                                                //   color:
+                                                //       product.discountedPrice !=
+                                                //               null
+                                                //           ? Colors.grey[700]
+                                                //           : Colors.red[900],
+                                                //   fontWeight: FontWeight.w500,
+                                                //   decoration:
+                                                //       product.discountedPrice !=
+                                                //               null
+                                                //           ? TextDecoration
+                                                //               .lineThrough
+                                                //           : TextDecoration.none,
+                                                // ),
                                               ),
                                               product.discountedPrice != null
                                                   ? Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              right: 8.0),
+                                                        left: 8.0,
+                                                        right: 8.0,
+                                                      ),
                                                       child: Text(
                                                         'Rs ${product.discountedPrice}',
                                                         maxLines: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: TextStyle(
-                                                          fontSize:
-                                                              mediaQuery.width *
-                                                                  0.05,
+                                                          fontSize: 18,
                                                           color:
                                                               Colors.red[900],
                                                           fontWeight:
@@ -230,10 +238,38 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     ),
             );
           } else {
-            return const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 1.0,
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 4.5 / 7,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 1,
               ),
+              itemBuilder: (ctx, i) {
+                return Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(10),
+                      width: double.infinity,
+                      height: mediaQuery.height * 0.25,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      width: mediaQuery.width * 0.4,
+                      height: mediaQuery.height * 0.02,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              itemCount: 14,
             );
           }
         },

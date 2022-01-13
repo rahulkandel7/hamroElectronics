@@ -25,6 +25,7 @@ class ForgetPasswordScreen extends StatelessWidget {
             'Check your Email address',
             style: TextStyle(
               fontSize: 18,
+              fontFamily: 'Poppins',
             ),
           ),
           elevation: 5.0,
@@ -47,6 +48,7 @@ class ForgetPasswordScreen extends StatelessWidget {
           'Reset Password',
           style: TextStyle(
             fontSize: 25,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,
@@ -69,6 +71,7 @@ class ForgetPasswordScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.indigo.shade800,
+                fontFamily: 'Poppins',
               ),
             ),
           ),

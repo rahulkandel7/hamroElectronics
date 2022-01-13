@@ -9,7 +9,8 @@ class CategoryController extends GetxController {
   var category = <Category>[].obs;
 
   fetchCtaegory() async {
-    final url = Uri.parse("https://hamroelectronics.com.np/api/category");
+    final url =
+        Uri.parse("https://hamroelectronics.com.np/api/596810BITS/category");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});
@@ -17,7 +18,7 @@ class CategoryController extends GetxController {
     final body = json.decode(response.body) as List;
 
     final List<Category> _category = [];
-    print(body);
+    print('I am Category');
 
     body.forEach((element) {
       _category.add(

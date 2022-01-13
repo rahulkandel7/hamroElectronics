@@ -1,28 +1,25 @@
-import 'dart:convert';
+import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hamro_electronics/controllers/themeController.dart';
 
-import '../controllers/productController.dart';
 import 'wishlist_screen.dart';
 import 'cartScreen.dart';
 import 'categoryScreen.dart';
 import 'homepage.dart';
 import 'profile_screen.dart';
-import '../controllers/cartController.dart';
-import '../controllers/wishlistController.dart';
-import '../controllers/bannerController.dart';
-import '../controllers/categoryController.dart';
-import '../controllers/notificationController.dart';
-import '../controllers/toppicksController.dart';
 import '../main.dart';
 
 class Navbar extends StatefulWidget {
   static const routeName = "/navbar";
+
+  const Navbar({Key? key}) : super(key: key);
 
   @override
   State<Navbar> createState() => _NavbarState();
@@ -30,13 +27,8 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar> {
   int _selectedIndex = 0;
-  final productController = Get.put(ProductController());
-  final wishlistController = Get.put(WishlistController());
-  final cartController = Get.put(CartController());
-  final categoryController = Get.put(CategoryController());
-  final notificationController = Get.put(NotificationController());
-  final bannerController = Get.put(BannerController());
-  final toppicksController = Get.put(ToppicksController());
+
+  final themeController = Get.put(ThemeController());
 
   final List<Widget> _widgetOptions = [
     HomePage(),
@@ -46,22 +38,9 @@ class _NavbarState extends State<Navbar> {
     ProfileScreen(),
   ];
 
-  String userName = "";
-  String token = "";
-  int userid = 0;
-
-  _getUserName() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-    var userInfo = _prefs.getString('user');
-    var userDecoded = json.decode(userInfo!) as Map<String, dynamic>;
-
-    setState(() {
-      userName = userDecoded["name"];
-      userid = userDecoded["id"] as int;
-      token = _prefs.getString('token').toString();
-    });
-  }
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   @override
   void initState() {
@@ -123,27 +102,78 @@ class _NavbarState extends State<Navbar> {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
 
-    cartController.fetchCart(userid.toString());
-    wishlistController.fetchWishlist(userid.toString());
-    categoryController.fetchCtaegory();
+    themeController.getThemeStatus();
 
-    notificationController.fetchNotification();
-    bannerController.fetchBanner();
-    toppicksController.fetchToppicks();
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       extendBody: true,
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: _connectionStatus == ConnectivityResult.none
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.1),
+                    child: Image.asset('assets/Noconnection.png'),
+                  ),
+                  Text(
+                    'Oops! No Connection',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.055,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
+                    child: Text(
+                      'No internet connection found. Check your connection or try again',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: CurvedNavigationBar(
         color: Colors.indigo,
         backgroundColor: Colors.transparent,
         animationCurve: Curves.easeInCubic,
         buttonBackgroundColor: Colors.indigo,
         height: 60,
-        animationDuration: const Duration(milliseconds: 500),
+        animationDuration: const Duration(milliseconds: 400),
         items: const [
           Icon(
             Icons.home_filled,
@@ -151,7 +181,7 @@ class _NavbarState extends State<Navbar> {
             color: Colors.white,
           ),
           Icon(
-            Icons.category,
+            Icons.list,
             size: 24,
             color: Colors.white,
           ),

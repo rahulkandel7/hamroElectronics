@@ -42,7 +42,6 @@ class _CategoryItemState extends State<CategoryItem> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     findPercent();
   }
@@ -64,12 +63,12 @@ class _CategoryItemState extends State<CategoryItem> {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: const [
+            color: Theme.of(context).backgroundColor,
+            boxShadow: [
               BoxShadow(
                 blurRadius: 5,
-                color: Colors.black12,
-                offset: Offset(5, 4),
+                color: Theme.of(context).shadowColor,
+                offset: const Offset(5, 4),
               )
             ],
             borderRadius: BorderRadius.circular(10),
@@ -102,12 +101,9 @@ class _CategoryItemState extends State<CategoryItem> {
                         vertical: mediaQuery.height * 0.01),
                     child: Text(
                       widget.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontSize: mediaQuery.width * 0.035,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Padding(
@@ -129,6 +125,7 @@ class _CategoryItemState extends State<CategoryItem> {
                                 ? Colors.grey[700]
                                 : Colors.red[900],
                             fontWeight: FontWeight.w500,
+                            fontFamily: 'Poppins',
                             decoration: widget.discountedPrice != null
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
@@ -146,6 +143,7 @@ class _CategoryItemState extends State<CategoryItem> {
                                     fontSize: mediaQuery.width * 0.044,
                                     color: Colors.red[900],
                                     fontWeight: FontWeight.w500,
+                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                               )
@@ -190,6 +188,7 @@ class _CategoryItemState extends State<CategoryItem> {
                             '$off% off',
                             style: TextStyle(
                               color: Colors.white,
+                              fontFamily: 'Poppins',
                             ),
                           ),
                         ),

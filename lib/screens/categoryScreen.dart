@@ -6,7 +6,10 @@ import '../controllers/categoryController.dart';
 
 class CategoryScreen extends StatelessWidget {
   final categoryController = Get.put(CategoryController());
-  Widget categoryItems(String title, String image) {
+
+  CategoryScreen({Key? key}) : super(key: key);
+
+  Widget categoryItems(String title, String image, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 10.0,
@@ -23,12 +26,7 @@ class CategoryScreen extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4.0),
             child: FittedBox(
               fit: BoxFit.fill,
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
+              child: Text(title, style: Theme.of(context).textTheme.subtitle1),
             ),
           ),
         ],
@@ -39,11 +37,13 @@ class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Categories',
           style: TextStyle(
             fontSize: 25,
+            fontFamily: 'Poppins',
           ),
         ),
         centerTitle: true,
@@ -52,19 +52,20 @@ class CategoryScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 38.0),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
           itemBuilder: (ctx, i) {
             return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    CategoryScreenItems.routeName,
-                    arguments: categoryController.category[i].id,
-                  );
-                },
-                child: categoryItems(categoryController.category[i].name,
-                    categoryController.category[i].image));
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  CategoryScreenItems.routeName,
+                  arguments: categoryController.category[i].id,
+                );
+              },
+              child: categoryItems(categoryController.category[i].name,
+                  categoryController.category[i].image, context),
+            );
           },
           itemCount: categoryController.category.length,
         ),

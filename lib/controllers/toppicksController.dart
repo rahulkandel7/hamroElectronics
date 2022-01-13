@@ -9,7 +9,8 @@ class ToppicksController extends GetxController {
   var toppicks = <Toppicks>[].obs;
 
   fetchToppicks() async {
-    var url = Uri.parse("https://www.hamroelectronics.com.np/api/toppicks");
+    var url = Uri.parse(
+        "https://www.hamroelectronics.com.np/api/596810BITS/toppicks");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});

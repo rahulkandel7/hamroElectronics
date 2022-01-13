@@ -14,4 +14,15 @@ class Cart {
     this.size,
     this.color,
   });
+
+  factory Cart.fromJson(Map<String, dynamic> json) {
+    return Cart(
+      userid: json["userid"],
+      productid: json["productid"],
+      quantity: json["quantity"],
+      id: json["id"],
+      size: json["size"],
+      color: json["color"],
+    );
+  }
 }

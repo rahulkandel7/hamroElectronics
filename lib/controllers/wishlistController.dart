@@ -10,7 +10,8 @@ class WishlistController extends GetxController {
   var wishlist = <Wishlist>[].obs;
 
   addToWishList(int userid, int productid, BuildContext context) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/wishlist');
+    final url =
+        Uri.parse('https://hamroelectronics.com.np/api/596810BITS/wishlist');
 
     final jsons = {
       'userid': userid.toString(),
@@ -30,7 +31,7 @@ class WishlistController extends GetxController {
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),
@@ -41,7 +42,8 @@ class WishlistController extends GetxController {
   }
 
   fetchWishlist(String id) async {
-    final url = Uri.parse('https://hamroelectronics.com.np/api/wishlist/$id');
+    final url = Uri.parse(
+        'https://hamroelectronics.com.np/api/596810BITS/wishlist/$id');
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});

@@ -42,7 +42,6 @@ class _HomeProductState extends State<HomeProduct> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     findPercent();
   }
@@ -64,24 +63,24 @@ class _HomeProductState extends State<HomeProduct> {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: const [
+            color: Theme.of(context).backgroundColor,
+            boxShadow: [
               BoxShadow(
                 blurRadius: 5,
-                color: Colors.black12,
-                offset: Offset(5, 4),
+                color: Theme.of(context).shadowColor,
+                offset: const Offset(5, 4),
               )
             ],
             borderRadius: BorderRadius.circular(10),
           ),
-          width: mediaQuery.width * 0.4,
+          width: mediaQuery.width * 0.45,
           child: Stack(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: mediaQuery.height * 0.24,
+                    height: mediaQuery.height * 0.246,
                     child: Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -104,10 +103,7 @@ class _HomeProductState extends State<HomeProduct> {
                       widget.name,
                       maxLines: 2,
                       overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontSize: mediaQuery.width * 0.035,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Padding(
@@ -115,24 +111,15 @@ class _HomeProductState extends State<HomeProduct> {
                         left: mediaQuery.width * 0.02,
                         bottom: mediaQuery.height * 0.01),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           'Rs ${widget.price}',
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: widget.discountedPrice != null
-                                ? mediaQuery.width * 0.03
-                                : mediaQuery.width * 0.044,
-                            color: widget.discountedPrice != null
-                                ? Colors.grey[700]
-                                : Colors.red[900],
-                            fontWeight: FontWeight.w500,
-                            decoration: widget.discountedPrice != null
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
+                          style: widget.discountedPrice != null
+                              ? Theme.of(context).textTheme.caption
+                              : Theme.of(context).textTheme.headline6,
                         ),
                         widget.discountedPrice != null
                             ? Padding(
@@ -141,12 +128,7 @@ class _HomeProductState extends State<HomeProduct> {
                                 child: Text(
                                   'Rs ${widget.discountedPrice}',
                                   maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.width * 0.044,
-                                    color: Colors.red[900],
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: Theme.of(context).textTheme.headline6,
                                 ),
                               )
                             : const SizedBox(),
@@ -155,30 +137,6 @@ class _HomeProductState extends State<HomeProduct> {
                   ),
                 ],
               ),
-              // Positioned(
-              //   top: 0,
-              //   right: 0,
-              //   child: IconButton(
-              //     onPressed: () {
-              //       setState(() {
-              //         wishlistController.addToWishList(
-              //             widget.userid, widget.id, context);
-              //         if (isFav == true) {
-              //           isFav = false;
-              //           print(isFav);
-              //         } else {
-              //           isFav = true;
-              //           print(isFav);
-              //         }
-              //       });
-              //     },
-              //     icon: Icon(
-              //       isFav ? Icons.favorite : Icons.favorite_border,
-              //       size: 24,
-              //       color: isFav ? Colors.red : Colors.grey[700],
-              //     ),
-              //   ),
-              // ),
               widget.discountedPrice == null
                   ? SizedBox()
                   : Positioned(

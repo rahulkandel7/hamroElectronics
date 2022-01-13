@@ -9,7 +9,8 @@ class BannerController extends GetxController {
   var banner = <Banners>[].obs;
 
   fetchBanner() async {
-    final url = Uri.parse("https://hamroelectronics.com.np/api/banner");
+    final url =
+        Uri.parse("https://hamroelectronics.com.np/api/596810BITS/banner");
 
     final response =
         await http.get(url, headers: {'Accept': 'application/json'});

@@ -127,6 +127,7 @@ class _AuthScreenState extends State<AuthScreen>
       });
     });
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: SafeArea(
         child: isLoading
             ? const Center(
@@ -145,7 +146,7 @@ class _AuthScreenState extends State<AuthScreen>
                         decoration: const BoxDecoration(
                           color: Colors.indigo,
                           borderRadius: BorderRadius.only(
-                            bottomLeft: const Radius.circular(1000),
+                            bottomLeft: Radius.circular(1000),
                             bottomRight: Radius.circular(
                               1000,
                             ),
@@ -172,7 +173,7 @@ class _AuthScreenState extends State<AuthScreen>
                           width: mediaQuery.width * 0.9,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: const [
                                 BoxShadow(
@@ -223,10 +224,10 @@ class _AuthScreenState extends State<AuthScreen>
                                   ),
                                 ),
                                 AnimatedContainer(
-                                  duration: const Duration(seconds: 3),
+                                  duration: const Duration(seconds: 1),
                                   height: _activeIndex == 0
                                       ? mediaQuery.height * 0.41
-                                      : mediaQuery.height * 0.58,
+                                      : mediaQuery.height * 0.62,
                                   child: TabBarView(
                                     controller: _controller,
                                     children: [
@@ -240,6 +241,8 @@ class _AuthScreenState extends State<AuthScreen>
                                           child: Column(
                                             children: [
                                               TextFormField(
+                                                style: const TextStyle(
+                                                    color: Colors.black),
                                                 onSaved: (value) {
                                                   email = value.toString();
                                                 },
@@ -285,7 +288,7 @@ class _AuthScreenState extends State<AuthScreen>
                                                     fontWeight: FontWeight.w600,
                                                     color: Colors.indigo[300],
                                                   ),
-                                                  prefixIcon: const Icon(
+                                                  prefixIcon: Icon(
                                                     Icons.email,
                                                     color: Colors.indigo,
                                                   ),
@@ -346,6 +349,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                       return "Password Doesn't match ";
                                                     }
                                                   },
+                                                  style: const TextStyle(
+                                                      color: Colors.black),
                                                   decoration: InputDecoration(
                                                     labelText: 'Password',
                                                     errorBorder:
@@ -569,6 +574,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return 'Name Field Required';
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       errorBorder:
                                                           OutlineInputBorder(
@@ -681,6 +688,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return 'Name Field Required';
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       errorBorder:
                                                           OutlineInputBorder(
@@ -798,6 +807,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return null;
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       labelText: 'Password',
                                                       errorBorder:
@@ -915,6 +926,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return null;
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       labelText:
                                                           'Confirm Password',
@@ -1033,6 +1046,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return null;
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       labelText:
                                                           'Mobile Number',
@@ -1143,6 +1158,8 @@ class _AuthScreenState extends State<AuthScreen>
                                                         return null;
                                                       }
                                                     },
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                     decoration: InputDecoration(
                                                       labelText: 'Address',
                                                       errorBorder:
