@@ -20,7 +20,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final cartController = Get.find<CartController>();
+  final cartController = Get.put(CartController());
   final productController = Get.put(ProductController());
   final areaController = Get.put(AreaController());
 
@@ -43,7 +43,8 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _onRefresh() async {
-    cartController.fetchCart(userId.toString());
+    await cartController.fetchCart(userId.toString());
+    setState(() {});
   }
 
   @override
@@ -51,6 +52,10 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     _getUserID();
     areaController.fetchArea();
+    cartController.fetchCart(userId.toString()).then((_) {
+      setState(() {});
+    });
+
     print('Me cart created');
   }
 

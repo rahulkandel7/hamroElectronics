@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,10 +45,6 @@ class _HomePageState extends State<HomePage> {
   int userid = 0;
   String? uphoto;
 
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
-  final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
   _getUserName() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
@@ -76,31 +69,6 @@ class _HomePageState extends State<HomePage> {
     });
     notificationController.fetchNotification();
     bannerController.fetchBanner();
-
-    initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-  }
-
-  Future<void> initConnectivity() async {
-    late ConnectivityResult result;
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-      return;
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
   }
 
   //Widget For title
@@ -422,7 +390,9 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(right: 18.0),
                         child: SizedBox(
                           width: mediaQuery.height * 0.12,
-                          child: Image.asset('assets/logo/logo.png'),
+                          child: Get.isDarkMode
+                              ? Image.asset('assets/logo/dark-logo.png')
+                              : Image.asset('assets/logo/logo.png'),
                         ),
                       ),
                       Row(
@@ -493,7 +463,9 @@ class _HomePageState extends State<HomePage> {
                         showSearch(
                           context: context,
                           delegate: CustomSearchDelegate(
-                              productController.product.toList()),
+                            productController.product.toList(),
+                            Get.isDarkMode ? Colors.black : Colors.white,
+                          ),
                         );
                       },
                       child: Container(
@@ -760,8 +732,12 @@ class _HomePageState extends State<HomePage> {
 
 class CustomSearchDelegate extends SearchDelegate {
   List<Product> product;
+  Color bg;
 
-  CustomSearchDelegate(this.product);
+  CustomSearchDelegate(
+    this.product,
+    this.bg,
+  );
   @override
   List<Widget>? buildActions(BuildContext context) {
     // IconButton(
@@ -850,9 +826,11 @@ class CustomSearchDelegate extends SearchDelegate {
                         children: [
                           Text(
                             matchQuery[i],
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                             maxLines: 2,
                           ),
                           Padding(
@@ -926,19 +904,27 @@ class CustomSearchDelegate extends SearchDelegate {
       }
     }
 
-    return ListView.builder(
-      itemBuilder: (ctx, i) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(ProductViewScreen.routeName,
-                arguments: matchQueryId[i]);
-          },
-          child: ListTile(
-            title: Text(matchQuery[i]),
-          ),
-        );
-      },
-      itemCount: matchQuery.length,
+    return Container(
+      height: double.infinity,
+      color: bg,
+      child: ListView.builder(
+        itemBuilder: (ctx, i) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(ProductViewScreen.routeName,
+                  arguments: matchQueryId[i]);
+            },
+            child: ListTile(
+              title: Text(
+                matchQuery[i],
+                style: TextStyle(
+                    color: Get.isDarkMode ? Colors.white : Colors.black),
+              ),
+            ),
+          );
+        },
+        itemCount: matchQuery.length,
+      ),
     );
   }
 }

@@ -83,7 +83,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         itemBuilder: (ctx, i) {
                           Product product = productController.findProduct(
                               wishlistController.wishlist[i].productid);
-                          return Padding(
+                          var wishlistItem = Padding(
                             padding: EdgeInsets.only(
                               right: mediaQuery.width * 0.02,
                               left: mediaQuery.width * 0.02,
@@ -158,28 +158,11 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                                             .caption
                                                         : Theme.of(context)
                                                             .textTheme
-                                                            .headline6,
-                                                // TextStyle(
-                                                //   fontSize:
-                                                //       product.discountedPrice !=
-                                                //               null
-                                                //           ? mediaQuery.width *
-                                                //               0.04
-                                                //           : mediaQuery.width *
-                                                //               0.05,
-                                                //   color:
-                                                //       product.discountedPrice !=
-                                                //               null
-                                                //           ? Colors.grey[700]
-                                                //           : Colors.red[900],
-                                                //   fontWeight: FontWeight.w500,
-                                                //   decoration:
-                                                //       product.discountedPrice !=
-                                                //               null
-                                                //           ? TextDecoration
-                                                //               .lineThrough
-                                                //           : TextDecoration.none,
-                                                // ),
+                                                            .headline6!
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .red
+                                                                    .shade800),
                                               ),
                                               product.discountedPrice != null
                                                   ? Padding(
@@ -232,6 +215,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               ),
                             ),
                           );
+                          return wishlistItem;
                         },
                         itemCount: wishlistController.wishlist.length,
                       ),

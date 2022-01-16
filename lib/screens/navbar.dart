@@ -181,7 +181,7 @@ class _NavbarState extends State<Navbar> {
             color: Colors.white,
           ),
           Icon(
-            Icons.list,
+            Icons.menu,
             size: 24,
             color: Colors.white,
           ),

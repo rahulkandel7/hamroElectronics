@@ -18,19 +18,6 @@ class CartController extends GetxController {
 
   var length = 0.obs;
 
-  static var client = http.Client();
-
-  getToken() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    tokens = localStorage.getString('token')!;
-  }
-
-  @override
-  void onInit() {
-    getToken();
-    super.onInit();
-  }
-
   addToCart(Cart cart, BuildContext context) async {
     final url =
         Uri.parse('https://hamroelectronics.com.np/api/596810BITS/cart');
@@ -43,7 +30,7 @@ class CartController extends GetxController {
       "size": cart.size.toString(),
     };
 
-    final response = await client.post(
+    final response = await http.post(
       url,
       headers: {'Accept': 'application/json'},
       body: jsons,
@@ -86,14 +73,10 @@ class CartController extends GetxController {
     final url =
         Uri.parse('https://hamroelectronics.com.np/api/596810BITS/cart/$id');
 
-    print('tokens');
-
     final response =
-        await client.get(url, headers: {'Accept': 'application/json'});
+        await http.get(url, headers: {'Accept': 'application/json'});
 
     final _carts = <Cart>[];
-    print(response.body);
-
     if (response.statusCode == 200) {
       List body = json.decode(response.body);
 
@@ -132,7 +115,7 @@ class CartController extends GetxController {
         'https://hamroelectronics.com.np/api/596810BITS/cart/delete/$id');
 
     final response =
-        await client.delete(url, headers: {'Accept': 'application/json'});
+        await http.delete(url, headers: {'Accept': 'application/json'});
 
     print(response.body);
 

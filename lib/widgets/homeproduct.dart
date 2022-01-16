@@ -119,7 +119,10 @@ class _HomeProductState extends State<HomeProduct> {
                           overflow: TextOverflow.ellipsis,
                           style: widget.discountedPrice != null
                               ? Theme.of(context).textTheme.caption
-                              : Theme.of(context).textTheme.headline6,
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(color: Colors.red.shade800),
                         ),
                         widget.discountedPrice != null
                             ? Padding(
@@ -128,7 +131,10 @@ class _HomeProductState extends State<HomeProduct> {
                                 child: Text(
                                   'Rs ${widget.discountedPrice}',
                                   maxLines: 1,
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(color: Colors.red.shade800),
                                 ),
                               )
                             : const SizedBox(),

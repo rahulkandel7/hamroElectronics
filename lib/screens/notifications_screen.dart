@@ -78,7 +78,7 @@ class NotificationScreen extends StatelessWidget {
                                         maxLines: 3,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5,
+                                            .subtitle2,
                                       ),
                                     ),
                                   ),
@@ -110,7 +110,10 @@ class NotificationScreen extends StatelessWidget {
                                         textAlign: TextAlign.end,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1,
+                                            .caption!
+                                            .copyWith(
+                                                decoration:
+                                                    TextDecoration.none),
                                       ),
                                     ),
                                   ),

@@ -81,34 +81,34 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         backgroundColor: Colors.grey[100],
         primarySwatch: Colors.indigo,
-        textTheme: TextTheme(
-          headline5: const TextStyle(
+        textTheme: const TextTheme(
+          headline5: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
             fontFamily: 'Poppins',
           ),
-          caption: const TextStyle(
+          caption: TextStyle(
             decoration: TextDecoration.lineThrough,
             fontWeight: FontWeight.w600,
             fontFamily: 'Poppins',
           ),
           headline6: TextStyle(
-            color: Colors.red.shade800,
+            color: Colors.indigo,
             fontFamily: 'Poppins',
           ),
-          subtitle1: const TextStyle(
+          subtitle1: TextStyle(
             color: Colors.black,
             fontFamily: 'Poppins',
           ),
-          bodyText2: const TextStyle(
+          bodyText2: TextStyle(
             color: Colors.indigo,
             fontFamily: 'Poppins',
           ),
-          headline4: const TextStyle(
+          headline4: TextStyle(
             color: Colors.indigo,
             fontFamily: 'Poppins',
           ),
-          subtitle2: const TextStyle(
+          subtitle2: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Colors.black,
@@ -141,7 +141,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Poppins',
           ),
           headline6: TextStyle(
-            color: Colors.red.shade800,
+            color: Colors.indigo,
             fontFamily: 'Poppins',
           ),
           headline4: const TextStyle(

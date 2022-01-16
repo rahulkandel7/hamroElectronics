@@ -252,7 +252,10 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                             ),
                             child: Text(
                               'Rs ${product.price}',
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(color: Colors.red.shade800),
                             ),
                           )
                         : Padding(
@@ -273,8 +276,10 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
                                     'Rs ${product.discountedPrice}',
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .copyWith(color: Colors.red.shade800),
                                   ),
                                 ),
                               ],
