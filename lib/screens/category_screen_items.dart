@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hamro_electronics/widgets/categoryItem.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/categoryController.dart';
 import '../controllers/productController.dart';
@@ -22,23 +19,23 @@ class _CategoryScreenItemsState extends State<CategoryScreenItems> {
 
   int userid = 0;
 
-  _getUserId() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+  // _getUserId() async {
+  //   SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    var userInfo = _prefs.getString('user');
+  //   var userInfo = _prefs.getString('user');
 
-    var userDecoded = json.decode(userInfo!) as Map<String, dynamic>;
+  //   var userDecoded = json.decode(userInfo!) as Map<String, dynamic>;
 
-    setState(() {
-      userid = userDecoded["id"] as int;
-    });
-  }
+  //   setState(() {
+  //     userid = userDecoded["id"] as int;
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getUserId();
+    // _getUserId();
   }
 
   @override
@@ -63,10 +60,11 @@ class _CategoryScreenItemsState extends State<CategoryScreenItems> {
       body: GridView.builder(
           physics: const BouncingScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            // maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.45,
             crossAxisCount: 2,
-            childAspectRatio: 3 / 5,
+            childAspectRatio: 3.09 / 5,
+
             mainAxisSpacing: 15,
-            crossAxisSpacing: 1,
           ),
           itemCount: product.length,
           itemBuilder: (context, i) {

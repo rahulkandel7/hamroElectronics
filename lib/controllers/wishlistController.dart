@@ -31,6 +31,11 @@ class WishlistController extends GetxController {
             ),
           ),
           elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,

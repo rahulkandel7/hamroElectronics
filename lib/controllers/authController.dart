@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hamro_electronics/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/auth_screen.dart';
 import '../screens/navbar.dart';
 import '../models/user.dart';
 
@@ -41,6 +41,11 @@ class AuthController extends GetxController {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           content: Text(
             body['errors']
                 .toString()
@@ -81,6 +86,11 @@ class AuthController extends GetxController {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           content: Text(
             body['message'][0].toString(),
           ),
@@ -111,7 +121,7 @@ class AuthController extends GetxController {
     _prefs.remove('token');
     _prefs.remove('user');
 
-    Navigator.of(context).pushReplacementNamed(AuthScreen.routeName);
+    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
   forgetPassword(String email) async {
@@ -137,29 +147,56 @@ class AuthController extends GetxController {
     String npassword,
     String cpassword,
     String token,
+    String photopath,
   ) async {
     final url = Uri.parse('https://hamroelectronics.com.np/api/user/update');
 
-    final jsons = {
-      'userid': uid,
-      'name': uname,
-      'phone': uphone,
-      'address': uaddress,
-      'oldpassword': opassword,
-      'newpassword': npassword,
-      'cpassword': cpassword,
-      'deviceToken': token,
-    };
+    if (photopath == '') {
+      final jsons = {
+        'userid': uid,
+        'name': uname,
+        'phone': uphone,
+        'address': uaddress,
+        'oldpassword': opassword,
+        'newpassword': npassword,
+        'cpassword': cpassword,
+        'deviceToken': token,
+      };
+      final response = await http.post(url, body: jsons, headers: {
+        'Accept': 'application/json',
+      });
 
-    final response = await http.post(url, body: jsons, headers: {
-      'Accept': 'application/json',
-    });
+      final body = json.decode(response.body) as Map<String, dynamic>;
 
-    final body = json.decode(response.body) as Map<String, dynamic>;
+      print(body["id"]);
 
-    print(body["id"]);
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('user', json.encode(body));
+    } else {
+      final jsons = {
+        'userid': uid,
+        'name': uname,
+        'phone': uphone,
+        'address': uaddress,
+        'oldpassword': opassword,
+        'newpassword': npassword,
+        'cpassword': cpassword,
+        'deviceToken': token,
+        'photopath': photopath,
+      };
+      Map<String, String> headers = {
+        'Content-Type': "multipart/form-data",
+        'Accept': 'application/json',
+      };
 
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    localStorage.setString('user', json.encode(body));
+      var request = http.MultipartRequest('POST', url)
+        ..fields.addAll(jsons)
+        ..headers.addAll(headers)
+        ..files.add(await http.MultipartFile.fromPath('photopath', photopath));
+
+      var response = await request.send();
+
+      Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+    }
   }
 }

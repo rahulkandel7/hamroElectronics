@@ -80,7 +80,7 @@ class _CategoryItemState extends State<CategoryItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: mediaQuery.height * 0.28,
+                    // height: mediaQuery.height * 0.28,
                     child: Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -111,7 +111,7 @@ class _CategoryItemState extends State<CategoryItem> {
                         left: mediaQuery.width * 0.02,
                         bottom: mediaQuery.height * 0.01),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           'Rs ${widget.price}',

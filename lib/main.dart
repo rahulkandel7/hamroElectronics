@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/auth_screen.dart';
 import '../screens/product_view_screen.dart';
 import '../screens/navbar.dart';
 import '../screens/checkout_screen.dart';
@@ -18,6 +17,8 @@ import '../screens/cartScreen.dart';
 import '../screens/edit_profile_screen.dart';
 import '../screens/forgetpassword_screen.dart';
 import '../screens/onboarding_screen.dart';
+import '../screens/login_screen.dart';
+import '../screens/signup_screen.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'id',
@@ -58,17 +59,15 @@ void main() async {
   );
 
   SharedPreferences _prefs = await SharedPreferences.getInstance();
-  bool hasToken = _prefs.getString('token') == null ? true : false;
   bool isFirst = _prefs.getBool('isFirst') == null ? true : false;
 
-  runApp(MyApp(hasToken, isFirst));
+  runApp(MyApp(isFirst));
 }
 
 class MyApp extends StatelessWidget {
-  final bool hasToken;
   final bool isFirst;
 
-  const MyApp(this.hasToken, this.isFirst, {Key? key}) : super(key: key);
+  const MyApp(this.isFirst, {Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -78,6 +77,7 @@ class MyApp extends StatelessWidget {
     ]);
     return GetMaterialApp(
       title: 'Hamro Electronic',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         backgroundColor: Colors.grey[100],
         primarySwatch: Colors.indigo,
@@ -119,24 +119,24 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         backgroundColor: Colors.grey[900],
         primarySwatch: Colors.indigo,
-        textTheme: TextTheme(
-          headline5: const TextStyle(
+        textTheme: const TextTheme(
+          headline5: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontFamily: 'Poppins',
           ),
-          subtitle2: const TextStyle(
+          subtitle2: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
-          caption: const TextStyle(
+          caption: TextStyle(
             decoration: TextDecoration.lineThrough,
             fontWeight: FontWeight.w600,
             fontFamily: 'Poppins',
             color: Colors.white,
           ),
-          subtitle1: const TextStyle(
+          subtitle1: TextStyle(
             color: Colors.white,
             fontFamily: 'Poppins',
           ),
@@ -144,15 +144,15 @@ class MyApp extends StatelessWidget {
             color: Colors.indigo,
             fontFamily: 'Poppins',
           ),
-          headline4: const TextStyle(
+          headline4: TextStyle(
             color: Colors.white,
             fontFamily: 'Poppins',
           ),
-          bodyText1: const TextStyle(
+          bodyText1: TextStyle(
             color: Colors.white,
             fontFamily: 'Poppins',
           ),
-          bodyText2: const TextStyle(
+          bodyText2: TextStyle(
             color: Colors.white,
             fontFamily: 'Poppins',
           ),
@@ -163,16 +163,13 @@ class MyApp extends StatelessWidget {
         shadowColor: Colors.white12,
       ),
       themeMode: ThemeMode.system,
-      home: isFirst
-          ? OnBoardingScreen()
-          : hasToken
-              ? AuthScreen()
-              : const Navbar(),
+      home: isFirst ? OnBoardingScreen() : const Navbar(),
       // hasToken ? AuthScreen() : Navbar(),
       routes: {
         Navbar.routeName: (ctx) => const Navbar(),
-        AuthScreen.routeName: (ctx) => AuthScreen(),
-        ProductViewScreen.routeName: (ctx) => ProductViewScreen(),
+        LoginScreen.routeName: (ctx) => const LoginScreen(),
+        SignupScreen.routeName: (ctx) => const SignupScreen(),
+        ProductViewScreen.routeName: (ctx) => const ProductViewScreen(),
         CheckOutScreen.routeName: (ctx) => CheckOutScreen(),
         ProfileScreen.routeName: (ctx) => ProfileScreen(),
         OrdersScreen.routeName: (ctx) => OrdersScreen(),

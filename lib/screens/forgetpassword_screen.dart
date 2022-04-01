@@ -20,8 +20,8 @@ class ForgetPasswordScreen extends StatelessWidget {
 
     _authController.forgetPassword(email).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             'Check your Email address',
             style: TextStyle(
               fontSize: 18,
@@ -29,8 +29,13 @@ class ForgetPasswordScreen extends StatelessWidget {
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           backgroundColor: Colors.indigo,
         ),
       );

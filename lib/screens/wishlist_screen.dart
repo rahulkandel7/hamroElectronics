@@ -76,9 +76,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 4.4 / 7,
-                          mainAxisSpacing: 5,
-                          crossAxisSpacing: 1,
+                          childAspectRatio: 3.1 / 5,
+                          mainAxisSpacing: 15,
                         ),
                         itemBuilder: (ctx, i) {
                           Product product = productController.findProduct(
@@ -107,7 +106,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                   ],
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                width: mediaQuery.width * 0.45,
+                                // width: mediaQuery.width * 0.45,
                                 child: Stack(
                                   children: [
                                     Column(
@@ -117,8 +116,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                         Container(
                                           padding:
                                               const EdgeInsets.only(top: 1.0),
-                                          height: mediaQuery.height * 0.257,
-                                          width: mediaQuery.width * 0.47,
+                                          // height: mediaQuery.height * 0.257,
+                                          // width: mediaQuery.width * 0.47,
                                           child: Center(
                                             child: ClipRRect(
                                               borderRadius:
@@ -134,8 +133,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                           padding: const EdgeInsets.all(10.0),
                                           child: Text(
                                             product.name,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle1,
@@ -225,9 +224,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 4.5 / 7,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 1,
+                childAspectRatio: 3.2 / 5,
+                mainAxisSpacing: 15,
               ),
               itemBuilder: (ctx, i) {
                 return Column(

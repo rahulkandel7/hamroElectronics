@@ -11,16 +11,20 @@ class CategoryScreen extends StatelessWidget {
 
   Widget categoryItems(String title, String image, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 18.0,
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.02,
+        horizontal: MediaQuery.of(context).size.width * 0.05,
       ),
       child: Column(
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(
+            backgroundColor: Colors.transparent,
+            radius: MediaQuery.of(context).size.height * 0.078,
+            backgroundImage: const AssetImage(
+              'assets/logo/logo.png',
+            ),
+            foregroundImage: NetworkImage(
                 'https://hamroelectronics.com.np/images/categories/$image'),
-            maxRadius: 55,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
@@ -50,7 +54,8 @@ class CategoryScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 38.0),
+        padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,

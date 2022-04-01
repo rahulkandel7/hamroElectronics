@@ -85,15 +85,20 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         .then((_) {
       Navigator.of(context).pushNamed(Navbar.routeName);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             'Order Placed Sucessfully',
             style: TextStyle(
               fontSize: 18,
             ),
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           elevation: 5.0,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),

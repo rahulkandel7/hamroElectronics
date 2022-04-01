@@ -226,7 +226,7 @@ class _AuthScreenState extends State<AuthScreen>
                                 AnimatedContainer(
                                   duration: const Duration(seconds: 1),
                                   height: _activeIndex == 0
-                                      ? mediaQuery.height * 0.41
+                                      ? mediaQuery.height * 0.42
                                       : mediaQuery.height * 0.62,
                                   child: TabBarView(
                                     controller: _controller,

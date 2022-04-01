@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:hamro_electronics/controllers/themeController.dart';
+import 'package:hamro_electronics/screens/login_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,6 +32,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? uphoto;
   String? uid;
 
+  bool hasToken = false;
+
   void _launchURL(String link) async {
     if (!await launch(
       "https://hamroelectronics.com.np/$link",
@@ -53,11 +56,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  _getToken() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hasToken = _prefs.getString('token') == null ? false : true;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _getUserInfo();
     statusController.fetchStatus(uid.toString());
+    _getToken();
   }
 
   Widget options(BuildContext context, IconData ico, String title) {
@@ -112,9 +123,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     CircleAvatar(
                       maxRadius: mediaQuery.width * 0.2,
-                      backgroundImage: NetworkImage(
-                        'https://hamroelectronics.com.np/images/users/$uphoto',
-                      ),
+                      backgroundColor: Colors.white,
+                      backgroundImage: const AssetImage('assets/logo/logo.png'),
+                      foregroundImage: hasToken
+                          ? NetworkImage(
+                              'https://hamroelectronics.com.np/images/users/$uphoto',
+                            )
+                          : NetworkImage(
+                              'https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png',
+                            ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -180,54 +197,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            EditProfileScreen(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0);
-                          const end = Offset.zero;
-                          const curve = Curves.ease;
+              hasToken
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    EditProfileScreen(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.ease;
 
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
 
-                          return SlideTransition(
-                            position: animation.drive(tween),
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: options(context, Icons.person, 'Edit profile')),
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            OrdersScreen(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0);
-                          const end = Offset.zero;
-                          const curve = Curves.ease;
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: options(context, Icons.person, 'Edit profile'))
+                  : SizedBox(),
+              hasToken
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    OrdersScreen(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.ease;
 
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
 
-                          return SlideTransition(
-                            position: animation.drive(tween),
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: options(context, Icons.history, 'Orders')),
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: options(context, Icons.history, 'Orders'))
+                  : SizedBox(),
               InkWell(
                   onTap: () {
                     Navigator.of(context).push(
@@ -277,39 +300,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 child: options(context, Icons.share, 'Share'),
               ),
-              InkWell(
-                onTap: () => authController.logout(context),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: mediaQuery.height * 0.01,
-                    horizontal: mediaQuery.width * 0.05,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
+              hasToken
+                  ? InkWell(
+                      onTap: () => authController.logout(context),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: mediaQuery.height * 0.01,
+                          horizontal: mediaQuery.width * 0.05,
+                        ),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const Icon(
-                              Icons.logout,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: mediaQuery.width * 0.04),
-                              child: Text(
-                                'Logout',
-                                style: Theme.of(context).textTheme.subtitle1,
+                            SizedBox(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.logout,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: mediaQuery.width * 0.04),
+                                    child: Text(
+                                      'Logout',
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    )
+                  : InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(LoginScreen.routeName);
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: mediaQuery.height * 0.01,
+                          horizontal: mediaQuery.width * 0.05,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.logout,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: mediaQuery.width * 0.04),
+                                    child: Text(
+                                      'Login',
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),

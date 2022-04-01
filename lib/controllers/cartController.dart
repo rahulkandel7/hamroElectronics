@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hamro_electronics/screens/cartScreen.dart';
+import 'package:hamro_electronics/screens/navbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,21 +50,39 @@ class CartController extends GetxController {
           elevation: 5.0,
           duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
+          action: SnackBarAction(
+            label: 'Go To Cart',
+            textColor: Colors.white,
+            onPressed: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(Navbar.routeName, arguments: 2);
+            },
+          ),
           backgroundColor: Colors.indigo,
         ),
       );
     } else {
       return ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             'Something went wrong',
             style: TextStyle(
               fontSize: 18,
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           backgroundColor: Colors.indigo,
         ),
       );
@@ -130,21 +150,31 @@ class CartController extends GetxController {
           ),
           elevation: 5.0,
           duration: const Duration(seconds: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),
       );
     } else {
       return ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             'Something went wrong',
             style: TextStyle(
               fontSize: 18,
             ),
           ),
           elevation: 5.0,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.indigo,
         ),

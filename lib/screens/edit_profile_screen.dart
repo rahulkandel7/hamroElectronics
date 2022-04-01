@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/authController.dart';
@@ -19,13 +21,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final _authController = Get.find<AuthController>();
 
+  File _image = File('');
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Widget _buildImage() {
+    if (_image == null) {
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
+        child: Text('Select Image'),
+      );
+    } else {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(
+            20,
+          ),
+          child: Image.file(
+            _image as File,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+      // Container(
+      //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10000)),
+      //   height: MediaQuery.of(context).size.height * 0.3,
+      //   width: MediaQuery.of(context).size.width * 0.3,
+      //   child: ClipRRect(
+      //     borderRadius: BorderRadius.circular(10000),
+      //     child: Image.file(_image as File),
+      //   ),
+      // );
+    }
+  }
+
   late String? userName;
   late String? userEmail;
   late String? userNumber;
   late String? userAddress;
+  late String? uphoto;
   String? oldPassword;
   String? newPassword;
   String? cPassword;
+
+  bool hasToken = false;
 
   String token = "";
   int userid = 0;
@@ -43,7 +93,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       userEmail = userDecoded["email"] as String;
       userNumber = userDecoded["phone"] as String;
       userAddress = userDecoded["address"] as String;
+      uphoto = userDecoded["photopath"];
       token = _prefs.getString('token').toString();
+    });
+  }
+
+  _getToken() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hasToken = _prefs.getString('token') == null ? false : true;
     });
   }
 
@@ -66,19 +124,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       newPassword.toString(),
       cPassword.toString(),
       token,
+      _image.path,
     )
         .then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
           'Profile Updated Sucessfully',
           style: TextStyle(
             fontSize: 18,
           ),
         ),
         elevation: 5.0,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.indigo,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            1000,
+          ),
+        ),
       ));
     }).then((_) {
       Navigator.of(context).pushReplacementNamed(Navbar.routeName);
@@ -89,6 +153,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     _getUserName();
+    _getToken();
   }
 
   @override
@@ -111,6 +176,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              child: TextButton(
+                onPressed: () {
+                  getImage();
+                },
+                child: _image.isAbsolute
+                    ? _buildImage()
+                    : Column(
+                        children: [
+                          CircleAvatar(
+                            maxRadius: mediaQuery.width * 0.2,
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                                const AssetImage('assets/logo/logo.png'),
+                            foregroundImage: hasToken
+                                ? NetworkImage(
+                                    'https://hamroelectronics.com.np/images/users/$uphoto',
+                                  )
+                                : NetworkImage(
+                                    'https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png',
+                                  ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(top: mediaQuery.height * 0.01),
+                            child: FittedBox(
+                              child: Text(
+                                'Upload Profile Image',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
             Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: mediaQuery.width * 0.04),

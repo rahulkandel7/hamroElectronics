@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/auth_screen.dart';
+
+import '../screens/navbar.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   static const routeName = '/onboardingscreen';
@@ -23,7 +24,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setBool('isFirst', true);
     Navigator.of(context).pushReplacementNamed(
-      AuthScreen.routeName,
+      Navbar.routeName,
     );
   }
 
@@ -57,7 +58,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Text(
-                          'Welcome',
+                          'Discover',
                           style: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.w500,
@@ -72,7 +73,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 MediaQuery.of(context).size.width * 0.01,
                           ),
                           child: const Text(
-                            'A new Era of Online Shopping',
+                            'Explore different types of products',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 19,
@@ -170,7 +171,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Text(
-                          'Get Started',
+                          'Enjoy Your Shopping',
                           style: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.w500,
@@ -185,7 +186,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 MediaQuery.of(context).size.width * 0.04,
                           ),
                           child: const Text(
-                            'Hamro nai Ramro',
+                            'Get high quality products for the best prices.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 19,

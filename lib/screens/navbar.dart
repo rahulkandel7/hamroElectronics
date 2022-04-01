@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:hamro_electronics/controllers/themeController.dart';
+import 'package:hamro_electronics/screens/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'wishlist_screen.dart';
 import 'cartScreen.dart';
@@ -28,19 +30,21 @@ class Navbar extends StatefulWidget {
 class _NavbarState extends State<Navbar> {
   int _selectedIndex = 0;
 
-  final themeController = Get.put(ThemeController());
+  bool hasToken = false;
 
-  final List<Widget> _widgetOptions = [
-    HomePage(),
-    CategoryScreen(),
-    CartScreen(),
-    WishlistScreen(),
-    ProfileScreen(),
-  ];
+  final themeController = Get.put(ThemeController());
 
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  _getToken() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      hasToken = _prefs.getString('token') == null ? false : true;
+    });
+  }
 
   @override
   void initState() {
@@ -103,6 +107,7 @@ class _NavbarState extends State<Navbar> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
 
     themeController.getThemeStatus();
+    _getToken();
 
     initConnectivity();
     _connectivitySubscription =
@@ -132,6 +137,14 @@ class _NavbarState extends State<Navbar> {
 
   @override
   Widget build(BuildContext context) {
+    Object? n = ModalRoute.of(context)!.settings.arguments;
+    final List<Widget> _widgetOptions = [
+      HomePage(),
+      CategoryScreen(),
+      hasToken ? CartScreen() : const LoginScreen(),
+      hasToken ? WishlistScreen() : const LoginScreen(),
+      ProfileScreen(),
+    ];
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       extendBody: true,
@@ -166,8 +179,9 @@ class _NavbarState extends State<Navbar> {
                 ],
               ),
             )
-          : _widgetOptions.elementAt(_selectedIndex),
+          : _widgetOptions.elementAt(n == null ? _selectedIndex : 2),
       bottomNavigationBar: CurvedNavigationBar(
+        index: n == null ? 0 : 2,
         color: Colors.indigo,
         backgroundColor: Colors.transparent,
         animationCurve: Curves.easeInCubic,

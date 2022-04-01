@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>286075290440-lldnja176d4u1c1d979kk7hkv2aa2nv6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.286075290440-lldnja176d4u1c1d979kk7hkv2aa2nv6</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCkXghpf3wCKWhQoXxQbacYc0tekGe5cvM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>286075290440</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.bits.hamroElectronics</string>
+	<key>PROJECT_ID</key>
+	<string>hamroelectronics-7fe28</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hamroelectronics-7fe28.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:286075290440:ios:f6cfa21a4676306263297d</string>
+</dict>
+</plist>

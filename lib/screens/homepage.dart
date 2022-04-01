@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hamro_electronics/screens/login_screen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,23 +41,30 @@ class _HomePageState extends State<HomePage> {
 
   final searchKey = GlobalKey<FormState>();
 
-  String userName = "";
+  String userName = "There";
   String token = "";
   int userid = 0;
   String? uphoto;
 
+  bool hasToken = false;
+
   _getUserName() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    var userInfo = _prefs.getString('user');
-    var userDecoded = json.decode(userInfo!) as Map<String, dynamic>;
-
     setState(() {
-      userName = userDecoded["name"];
-      userid = userDecoded["id"] as int;
-      uphoto = userDecoded["photopath"];
-      token = _prefs.getString('token').toString();
+      hasToken = _prefs.getString('token') == null ? false : true;
     });
+    if (hasToken) {
+      var userInfo = _prefs.getString('user');
+      var userDecoded = json.decode(userInfo!) as Map<String, dynamic>;
+
+      setState(() {
+        userName = userDecoded["name"];
+        userid = userDecoded["id"] as int;
+        uphoto = userDecoded["photopath"];
+        token = _prefs.getString('token').toString();
+      });
+    }
   }
 
   @override
@@ -64,8 +72,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     productController.fetchproducts();
     _getUserName().then((_) {
-      wishlistController.fetchWishlist(userid.toString());
-      cartController.fetchCart(userid.toString());
+      if (hasToken) {
+        wishlistController.fetchWishlist(userid.toString());
+        cartController.fetchCart(userid.toString());
+      }
     });
     notificationController.fetchNotification();
     bannerController.fetchBanner();
@@ -141,8 +151,9 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.03),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.36,
+                    height: MediaQuery.of(context).size.height * 0.34,
                     child: ListView.builder(
+                      shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (ctx, i) {
                         return HomeProduct(
@@ -399,27 +410,51 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      CartScreen(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    const begin = Offset(1.0, 0.0);
-                                    const end = Offset.zero;
-                                    const curve = Curves.ease;
+                              if (hasToken) {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        CartScreen(),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
 
-                                    var tween = Tween(begin: begin, end: end)
-                                        .chain(CurveTween(curve: curve));
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
 
-                                    return SlideTransition(
-                                      position: animation.drive(tween),
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        const LoginScreen(),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
+
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
                             },
                             child: Stack(
                               clipBehavior: Clip.none,
@@ -427,24 +462,27 @@ class _HomePageState extends State<HomePage> {
                                 const Icon(
                                   Icons.shopping_cart_outlined,
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  top: -5,
-                                  child: CircleAvatar(
-                                      child: FittedBox(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Obx(
-                                            () {
-                                              return Text(
-                                                  '${cartController.length.value}');
-                                            },
-                                          ),
-                                        ),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      maxRadius: 7),
-                                ),
+                                hasToken
+                                    ? Positioned(
+                                        right: 0,
+                                        top: -5,
+                                        child: CircleAvatar(
+                                            child: FittedBox(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: Obx(
+                                                  () {
+                                                    return Text(
+                                                        '${cartController.length.value}');
+                                                  },
+                                                ),
+                                              ),
+                                              fit: BoxFit.fill,
+                                            ),
+                                            maxRadius: 7),
+                                      )
+                                    : const SizedBox(),
                               ],
                             ),
                           ),
@@ -537,8 +575,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       options: CarouselOptions(
                         viewportFraction: 1,
-                        height: 160,
-                        // aspectRatio: 21 / 9,
+                        aspectRatio: 21 / 9,
                         initialPage: 0,
                         enableInfiniteScroll: true,
                         reverse: false,
@@ -557,7 +594,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (ctx, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           return SizedBox(
-                            height: mediaQuery.height * 0.353,
+                            height: MediaQuery.of(context).size.height * 0.34,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (ctx, i) {
@@ -579,7 +616,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         } else {
                           return SizedBox(
-                            height: mediaQuery.height * 0.36,
+                            height: mediaQuery.height * 0.34,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (ctx, i) {

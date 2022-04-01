@@ -54,7 +54,7 @@ class _HomeProductState extends State<HomeProduct> {
       padding: EdgeInsets.only(
         right: mediaQuery.width * 0.02,
         left: mediaQuery.width * 0.02,
-        bottom: mediaQuery.width * 0.01,
+        bottom: mediaQuery.width * 0.03,
       ),
       child: InkWell(
         onTap: () {
@@ -73,7 +73,7 @@ class _HomeProductState extends State<HomeProduct> {
             ],
             borderRadius: BorderRadius.circular(10),
           ),
-          width: mediaQuery.width * 0.45,
+          width: mediaQuery.width * 0.4,
           child: Stack(
             children: [
               Column(
@@ -101,40 +101,43 @@ class _HomeProductState extends State<HomeProduct> {
                         vertical: mediaQuery.height * 0.01),
                     child: Text(
                       widget.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
                         left: mediaQuery.width * 0.02,
-                        bottom: mediaQuery.height * 0.01),
+                        bottom: mediaQuery.height * 0.00),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           'Rs ${widget.price}',
-                          maxLines: 3,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: widget.discountedPrice != null
                               ? Theme.of(context).textTheme.caption
                               : Theme.of(context)
                                   .textTheme
-                                  .headline6!
+                                  .bodyText1!
                                   .copyWith(color: Colors.red.shade800),
                         ),
                         widget.discountedPrice != null
                             ? Padding(
                                 padding: const EdgeInsets.only(
                                     left: 8.0, right: 8.0),
-                                child: Text(
-                                  'Rs ${widget.discountedPrice}',
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .copyWith(color: Colors.red.shade800),
+                                child: FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: Text(
+                                    'Rs ${widget.discountedPrice}',
+                                    maxLines: 1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(color: Colors.red.shade800),
+                                  ),
                                 ),
                               )
                             : const SizedBox(),

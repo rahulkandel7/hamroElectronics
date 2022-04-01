@@ -318,7 +318,7 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                         ),
                         Positioned(
-                          bottom: mediaQuery.height * 0.08,
+                          bottom: mediaQuery.height * 0.09,
                           right: mediaQuery.width * 0.03,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
