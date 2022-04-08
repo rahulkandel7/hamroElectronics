@@ -47,6 +47,9 @@ dependencies:
   cached_network_image: ^3.2.0 
   share_plus: ^3.0.4
   url_launcher: ^6.0.17
+  flutter_facebook_auth: ^4.1.2
+  google_sign_in: ^5.2.4
+  font_awesome_flutter: ^10.1.0
   connectivity_plus: ^2.2.0 
 
 dev_dependencies:

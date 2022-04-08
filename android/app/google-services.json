@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "286075290440-8hlhgtstm8s75j1c583v73dlptihjsur.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bits.hamro_electronics",
+            "certificate_hash": "ab5cfd0e91fdebb5befe6733a853b7477c12b7c8"
+          }
+        },
+        {
+          "client_id": "286075290440-9vlll9rqiggrl9sin8aijrnd8hl5cuf4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bits.hamro_electronics",
+            "certificate_hash": "2d56096d4dbcc742c26eb0c16a18a285a57af04f"
+          }
+        },
+        {
           "client_id": "286075290440-j96uvil5lda5r06iarpgg31fvcuku291.apps.googleusercontent.com",
           "client_type": 3
         }

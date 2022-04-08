@@ -1,17 +1,21 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hamro_electronics/screens/login_screen.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/navbar.dart';
 import '../models/user.dart';
+import '../screens/login_screen.dart';
 
 class AuthController extends GetxController {
   String tokens = "";
+  var ftoken = "".obs;
 
   register(User user, BuildContext context, String token) async {
     final url =
@@ -67,11 +71,18 @@ class AuthController extends GetxController {
     }
   }
 
-  login(String email, String password, BuildContext context) async {
+  login(
+    String email,
+    String password,
+    String token,
+    BuildContext context,
+  ) async {
     final url =
         Uri.parse('https://hamroelectronics.com.np/api/596810BITS/login');
 
-    final jsons = {'email': email, 'password': password};
+    final jsons = {'email': email, 'password': password, 'deviceToken': token};
+
+    print(token);
 
     final response = await http
         .post(url, body: jsons, headers: {'Accept': 'application/json'});
@@ -101,8 +112,6 @@ class AuthController extends GetxController {
     if (response.statusCode == 201) {
       localStorage.setString('user', json.encode(body['user']));
       localStorage.setString('token', body['token']);
-
-      tokens = localStorage.getString('token')!;
 
       Navigator.of(context).pushReplacementNamed(Navbar.routeName);
     }
@@ -197,6 +206,130 @@ class AuthController extends GetxController {
       var response = await request.send();
 
       Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+    }
+  }
+
+  facebook(BuildContext context) async {
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    if (result.status == LoginStatus.success) {
+      final url = Uri.parse(
+          'https://hamroelectronics.com.np/api/596810BITS/user/createfromfb');
+
+      var token = result.accessToken!.token.toString();
+      final userData = await FacebookAuth.instance.getUserData();
+
+      String name = userData['name'];
+      String? email = userData['email'];
+      String id = userData['id'];
+
+      await FirebaseMessaging.instance.getToken().then((token) {
+        ftoken.value = token.toString();
+      });
+      FirebaseMessaging.instance.subscribeToTopic('all');
+
+      final jsons = {
+        'email': email,
+        'name': name,
+        'id': id,
+        'deviceToken': ftoken.toString()
+      };
+
+      final response = await http
+          .post(url, body: jsons, headers: {'Accept': 'application/json'});
+
+      var body = json.decode(response.body) as Map<String, dynamic>;
+
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                1000,
+              ),
+            ),
+            content: const Text(
+              'Something Went Wrong',
+            ),
+          ),
+        );
+      }
+
+      if (response.statusCode == 200) {
+        localStorage.setString('user', json.encode(body));
+        localStorage.setString('token', token);
+
+        Navigator.of(context).pushReplacementNamed(Navbar.routeName);
+      }
+    } else {
+      print(result.status);
+      print(result.message);
+    }
+  }
+
+  google(BuildContext context) async {
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+    _googleSignIn.disconnect();
+
+    final url = Uri.parse(
+        'https://hamroelectronics.com.np/api/596810BITS/user/createfromgoogle');
+
+    final userData = await _googleSignIn.signIn();
+
+    print(userData!.displayName);
+
+    String? name = userData.displayName;
+    String? email = userData.email;
+    String id = userData.id;
+
+    print("$name Email $email id $id");
+
+    await FirebaseMessaging.instance.getToken().then((token) {
+      ftoken.value = token.toString();
+    });
+    FirebaseMessaging.instance.subscribeToTopic('all');
+
+    final jsons = {
+      'email': email,
+      'name': name,
+      'id': id,
+      'deviceToken': ftoken.toString()
+    };
+
+    final response = await http
+        .post(url, body: jsons, headers: {'Accept': 'application/json'});
+
+    var body = json.decode(response.body) as Map<String, dynamic>;
+
+    print(body['check']);
+
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+
+    if (response.statusCode != 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              1000,
+            ),
+          ),
+          content: const Text(
+            'Something Went Wrong',
+          ),
+        ),
+      );
+    }
+
+    if (response.statusCode == 200) {
+      localStorage.setString('user', json.encode(body['check']));
+      localStorage.setString('token', body['token']);
+
+      Navigator.of(context).pushReplacementNamed(Navbar.routeName);
     }
   }
 }

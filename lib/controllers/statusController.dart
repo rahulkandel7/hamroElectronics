@@ -8,6 +8,7 @@ class StatusController extends GetxController {
   var status = <Order>[].obs;
 
   fetchStatus(String uid) async {
+    print(uid);
     final url = Uri.parse(
         "https://hamroelectronics.com.np/api/596810BITS/order/show/$uid");
 
@@ -15,6 +16,8 @@ class StatusController extends GetxController {
         await http.get(url, headers: {'Accept': 'application/json'});
 
     final body = json.decode(response.body) as List;
+
+    print(response.body);
 
     final List<Order> _order = [];
 

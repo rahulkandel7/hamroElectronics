@@ -296,7 +296,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? Share.share(
                           "https://bit.ly/3lWLutS",
                         )
-                      : print('CommingSoon');
+                      : Share.share(
+                          "https://apps.apple.com/us/app/hamro-electronics-shop-online/id1610534669");
                 },
                 child: options(context, Icons.share, 'Share'),
               ),

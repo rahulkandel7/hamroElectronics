@@ -1,12 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hamro_electronics/screens/signup_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/forgetpassword_screen.dart';
 import '../controllers/authController.dart';
+import '../screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -39,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     super.dispose();
     _loginpassword.dispose();
+    _authController.dispose();
   }
 
   late String tokens;
@@ -55,22 +57,16 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    // FirebaseMessaging.instance.getToken().then((token) {
-    //   setState(() {
-    //     tokens = token.toString();
-    //   });
-    //   print(tokens);
-    // }).then((_) {
-    //   _authController.login(email, password, context);
-    //   FirebaseMessaging.instance.subscribeToTopic('all');
+    FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        tokens = token.toString();
+      });
+    }).then((_) {
+      print(tokens);
 
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // });
-
-    _authController.login(email, password, context).then((_) {
+      _authController.login(email, password, tokens, context);
       FirebaseMessaging.instance.subscribeToTopic('all');
+
       setState(() {
         isLoading = false;
       });
@@ -82,140 +78,59 @@ class _LoginScreenState extends State<LoginScreen> {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      body: SafeArea(
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 0.6,
-                ),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomPaint(
-                    size: Size(
-                        double.infinity,
-                        (400 * 0.22222222222222224)
-                            .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                    painter: RPSCustomPainter(),
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 0.6,
                   ),
-                  SizedBox(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: mediaQuery.width * 0.5,
-                          child: Image.asset('assets/logo/logo.png'),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: mediaQuery.width * 0.06,
-                            vertical: mediaQuery.height * 0.03,
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomPaint(
+                      size: Size(
+                          double.infinity,
+                          (400 * 0.22222222222222224)
+                              .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                      painter: RPSCustomPainter(),
+                    ),
+                    SizedBox(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: mediaQuery.width * 0.5,
+                            child: Image.asset('assets/logo/logo.png'),
                           ),
-                          child: Form(
-                            key: _loginKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  style: const TextStyle(color: Colors.black),
-                                  onSaved: (value) {
-                                    email = value.toString().trim();
-                                  },
-                                  onEditingComplete: () {
-                                    FocusScope.of(context)
-                                        .requestFocus(_loginpassword);
-                                  },
-                                  validator: (value) {
-                                    if (value!.trim().isEmail) {
-                                      return null;
-                                    } else {
-                                      return 'Email Field Required';
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Email Address',
-                                    errorStyle: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        ?.copyWith(
-                                          decoration: TextDecoration.none,
-                                          color: Colors.red.shade800,
-                                        ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        width: 1.0,
-                                        color: Colors.red,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        10,
-                                      ),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        width: 1.0,
-                                        color: Colors.indigo,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        10,
-                                      ),
-                                    ),
-                                    labelStyle: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.indigo[300],
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.email,
-                                      color: Colors.indigo,
-                                    ),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    disabledBorder: InputBorder.none,
-                                    isDense: true,
-                                    floatingLabelStyle: const TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        width: 1.0,
-                                        color: Colors.indigo,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        10,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 1.0,
-                                        color: Colors.indigo.shade100,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  cursorColor: Colors.indigo,
-                                  enabled: true,
-                                  enableSuggestions: true,
-                                  keyboardType: TextInputType.emailAddress,
-                                ),
-
-                                //Password Field
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: mediaQuery.height * 0.02,
-                                  ),
-                                  child: TextFormField(
-                                    focusNode: _loginpassword,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: mediaQuery.width * 0.06,
+                              vertical: mediaQuery.height * 0.03,
+                            ),
+                            child: Form(
+                              key: _loginKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    style: const TextStyle(color: Colors.black),
                                     onSaved: (value) {
-                                      password = value.toString();
+                                      email = value.toString().trim();
+                                    },
+                                    onEditingComplete: () {
+                                      FocusScope.of(context)
+                                          .requestFocus(_loginpassword);
                                     },
                                     validator: (value) {
-                                      if (value!.length > 7) {
+                                      if (value!.trim().isEmail) {
                                         return null;
                                       } else {
-                                        return "Password Doesn't match ";
+                                        return 'Email Field Required';
                                       }
                                     },
-                                    style: const TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
-                                      labelText: 'Password',
+                                      labelText: 'Email Address',
                                       errorStyle: Theme.of(context)
                                           .textTheme
                                           .caption
@@ -246,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: Colors.indigo[300],
                                       ),
                                       prefixIcon: const Icon(
-                                        Icons.lock,
+                                        Icons.email,
                                         color: Colors.indigo,
                                       ),
                                       contentPadding: const EdgeInsets.all(0),
@@ -274,25 +189,156 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     cursorColor: Colors.indigo,
                                     enabled: true,
-                                    enableSuggestions: false,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    obscureText: true,
+                                    enableSuggestions: true,
+                                    keyboardType: TextInputType.emailAddress,
                                   ),
-                                ),
-                                //Login Button
 
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: mediaQuery.height * 0.01),
-                                  child: SizedBox(
-                                    width: mediaQuery.width * 0.3,
+                                  //Password Field
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: mediaQuery.height * 0.02,
+                                    ),
+                                    child: TextFormField(
+                                      focusNode: _loginpassword,
+                                      onSaved: (value) {
+                                        password = value.toString();
+                                      },
+                                      validator: (value) {
+                                        if (value!.length > 7) {
+                                          return null;
+                                        } else {
+                                          return "Password Doesn't match ";
+                                        }
+                                      },
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                        labelText: 'Password',
+                                        errorStyle: Theme.of(context)
+                                            .textTheme
+                                            .caption
+                                            ?.copyWith(
+                                              decoration: TextDecoration.none,
+                                              color: Colors.red.shade800,
+                                            ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            width: 1.0,
+                                            color: Colors.red,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            width: 1.0,
+                                            color: Colors.indigo,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        labelStyle: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.indigo[300],
+                                        ),
+                                        prefixIcon: const Icon(
+                                          Icons.lock,
+                                          color: Colors.indigo,
+                                        ),
+                                        contentPadding: const EdgeInsets.all(0),
+                                        disabledBorder: InputBorder.none,
+                                        isDense: true,
+                                        floatingLabelStyle: const TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            width: 1.0,
+                                            color: Colors.indigo,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            width: 1.0,
+                                            color: Colors.indigo.shade100,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      cursorColor: Colors.indigo,
+                                      enabled: true,
+                                      enableSuggestions: false,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                  //Login Button
+
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: mediaQuery.height * 0.01),
+                                    child: SizedBox(
+                                      width: mediaQuery.width * 0.3,
+                                      child: ElevatedButton(
+                                        onPressed: () => userLogin(),
+                                        style: ElevatedButton.styleFrom(
+                                          enableFeedback: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'Login',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 2.0),
+                                              child: Icon(
+                                                Icons.login,
+                                                size: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: mediaQuery.width * 0.8,
+                                    child: Divider(
+                                      color: Colors.indigo.withOpacity(0.3),
+                                      thickness: 1,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: mediaQuery.width * 0.5,
                                     child: ElevatedButton(
-                                      onPressed: () => userLogin(),
+                                      onPressed: () =>
+                                          _authController.facebook(context),
                                       style: ElevatedButton.styleFrom(
                                         enableFeedback: true,
+                                        primary:
+                                            Color.fromRGBO(66, 103, 178, 1),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(20),
+                                              BorderRadius.circular(10),
                                         ),
                                       ),
                                       child: Row(
@@ -301,135 +347,184 @@ class _LoginScreenState extends State<LoginScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: const [
-                                          Text(
-                                            'Login',
-                                            style: TextStyle(
-                                              fontSize: 16,
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 4.0),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.facebook,
+                                              size: 16,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 2.0),
-                                            child: Icon(
-                                              Icons.login,
-                                              size: 16,
+                                          Text(
+                                            'Facebook',
+                                            style: TextStyle(
+                                              fontSize: 16,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        ForgetPasswordScreen.routeName);
-                                  },
-                                  child: const Padding(
-                                    padding: EdgeInsets.only(left: 6.0),
-                                    child: Text(
-                                      'Forget Password ?',
-                                      style: TextStyle(
-                                        color: Colors.indigo,
-                                        fontWeight: FontWeight.bold,
+                                  Text('or',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2),
+
+                                  SizedBox(
+                                    width: mediaQuery.width * 0.5,
+                                    child: ElevatedButton(
+                                      onPressed: () =>
+                                          _authController.google(context),
+                                      style: ElevatedButton.styleFrom(
+                                        enableFeedback: true,
+                                        primary: const Color.fromRGBO(
+                                            219, 68, 55, 1),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 4.0),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.google,
+                                              size: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Google',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: mediaQuery.height * 0.02),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation,
-                                                  secondaryAnimation) =>
-                                              const SignupScreen(),
-                                          transitionsBuilder: (context,
-                                              animation,
-                                              secondaryAnimation,
-                                              child) {
-                                            const begin = Offset(1.0, 0.0);
-                                            const end = Offset.zero;
-                                            const curve = Curves.ease;
 
-                                            var tween = Tween(
-                                                    begin: begin, end: end)
-                                                .chain(
-                                                    CurveTween(curve: curve));
-
-                                            return SlideTransition(
-                                              position: animation.drive(tween),
-                                              child: child,
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(left: 6.0),
-                                      child: Text(
-                                        "Don't have an account ? Sign Up",
-                                        style: TextStyle(
-                                          color: Colors.indigo,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    _launchBITS();
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      top: mediaQuery.height * 0.01,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'Powered By:',
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 7.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            ForgetPasswordScreen.routeName);
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          'Forget Password ?',
                                           style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
                                             color: Colors.indigo,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: mediaQuery.width * 0.02),
-                                          child: Text(
-                                            'BITS',
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: mediaQuery.height * 0.02),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                    secondaryAnimation) =>
+                                                const SignupScreen(),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              const begin = Offset(1.0, 0.0);
+                                              const end = Offset.zero;
+                                              const curve = Curves.ease;
+
+                                              var tween = Tween(
+                                                      begin: begin, end: end)
+                                                  .chain(
+                                                      CurveTween(curve: curve));
+
+                                              return SlideTransition(
+                                                position:
+                                                    animation.drive(tween),
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          "Don't have an account ? Sign Up",
+                                          style: TextStyle(
+                                            color: Colors.indigo,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      _launchBITS();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        top: mediaQuery.height * 0.01,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Powered By:',
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
-                                              color: Colors.red[800],
+                                              color: Colors.indigo,
                                             ),
                                           ),
-                                        )
-                                      ],
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: mediaQuery.width * 0.02),
+                                            child: Text(
+                                              'BITS',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.red[800],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  CustomPaint(
-                    size: Size(
-                        double.infinity,
-                        (400 * 0.22222222222222224)
-                            .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                    painter: RPPSCustomPainter(),
-                  ),
-                ],
-              ),
+                    CustomPaint(
+                      size: Size(
+                          double.infinity,
+                          (400 * 0.22222222222222224)
+                              .toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                      painter: RPPSCustomPainter(),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

@@ -99,7 +99,7 @@ class _AuthScreenState extends State<AuthScreen>
     });
   }
 
-  userLogin() {
+  userLogin() async {
     _loginKey.currentState!.save();
 
     if (!_loginKey.currentState!.validate()) {
@@ -110,8 +110,14 @@ class _AuthScreenState extends State<AuthScreen>
       isLoading = true;
     });
 
-    _authController.login(email, password, context).then((_) {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        tokens = token.toString();
+      });
+    }).then((_) {
+      _authController.login(email, password, tokens, context);
       FirebaseMessaging.instance.subscribeToTopic('all');
+
       setState(() {
         isLoading = false;
       });
