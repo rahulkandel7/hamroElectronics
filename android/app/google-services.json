@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "286075290440-ihjkju3a3rf2q6htqr8s6e8uat2ulsh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bits.hamro_electronics",
+            "certificate_hash": "286ff9de168aa313761eebcdd3a9740669c6c1ff"
+          }
+        },
+        {
           "client_id": "286075290440-j96uvil5lda5r06iarpgg31fvcuku291.apps.googleusercontent.com",
           "client_type": 3
         }

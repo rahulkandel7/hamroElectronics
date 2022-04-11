@@ -22,10 +22,35 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1480488948989338</string>
+				<string>com.googleusercontent.apps.286075290440-lldnja176d4u1c1d979kk7hkv2aa2nv6</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FacebookAppID</key>
+	<string>1480488948989338</string>
+	<key>FacebookClientToken</key>
+	<string>c9f5202e77928d32e0c1bfa45b6dca33</string>
+	<key>FacebookDisplayName</key>
+	<string>Hamro Electronics</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -56,32 +81,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-	  	<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          	<string>fb1480488948989338</string>
-			<string>com.googleusercontent.apps.286075290440-lldnja176d4u1c1d979kk7hkv2aa2nv6</string>
-        </array>
-      </dict>
-    </array>
-    <key>FacebookAppID</key>
-    <string>1480488948989338</string>
-    <key>FacebookClientToken</key>
-    <string>c9f5202e77928d32e0c1bfa45b6dca33</string>
-    <key>FacebookDisplayName</key>
-    <string>Hamro Electronics</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>fbapi</string>
-      <string>fb-messenger-share-api</string>
-      <string>fbauth2</string>
-      <string>fbshareextension</string>
-    </array>
-
-	
 </dict>
 </plist>

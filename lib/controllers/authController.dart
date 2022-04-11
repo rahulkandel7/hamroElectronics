@@ -210,7 +210,11 @@ class AuthController extends GetxController {
   }
 
   facebook(BuildContext context) async {
+    print('i am facebook');
+
     final LoginResult result = await FacebookAuth.instance.login();
+
+    print('i am facebook');
 
     if (result.status == LoginStatus.success) {
       final url = Uri.parse(
@@ -229,20 +233,31 @@ class AuthController extends GetxController {
       FirebaseMessaging.instance.subscribeToTopic('all');
 
       final jsons = {
-        'email': email,
+        'email': email ?? '',
         'name': name,
         'id': id,
         'deviceToken': ftoken.toString()
       };
 
+      print(email);
+      print(name);
+      print(id);
+      print(ftoken);
+
+      print('i am facebook');
+
       final response = await http
           .post(url, body: jsons, headers: {'Accept': 'application/json'});
+
+      print(response.body);
 
       var body = json.decode(response.body) as Map<String, dynamic>;
 
       SharedPreferences localStorage = await SharedPreferences.getInstance();
 
       if (response.statusCode != 200) {
+        print(response.body);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
@@ -259,7 +274,7 @@ class AuthController extends GetxController {
       }
 
       if (response.statusCode == 200) {
-        localStorage.setString('user', json.encode(body));
+        localStorage.setString('user', json.encode(body['check']));
         localStorage.setString('token', token);
 
         Navigator.of(context).pushReplacementNamed(Navbar.routeName);
@@ -306,6 +321,7 @@ class AuthController extends GetxController {
     var body = json.decode(response.body) as Map<String, dynamic>;
 
     print(body['check']);
+    print(body);
 
     SharedPreferences localStorage = await SharedPreferences.getInstance();
 
