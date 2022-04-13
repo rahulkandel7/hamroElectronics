@@ -54,15 +54,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       );
-      // Container(
-      //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10000)),
-      //   height: MediaQuery.of(context).size.height * 0.3,
-      //   width: MediaQuery.of(context).size.width * 0.3,
-      //   child: ClipRRect(
-      //     borderRadius: BorderRadius.circular(10000),
-      //     child: Image.file(_image as File),
-      //   ),
-      // );
     }
   }
 
@@ -70,7 +61,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late String? userEmail;
   late String? userNumber;
   late String? userAddress;
-  late String? uphoto;
+  String? uphoto;
   String? oldPassword;
   String? newPassword;
   String? cPassword;
@@ -88,14 +79,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     setState(() {
       userName = userDecoded["name"];
-      userid = userDecoded["id"] as int;
-      userName = userDecoded["name"] as String;
-      userEmail = userDecoded["email"] as String;
-      userNumber = userDecoded["phone"] as String;
-      userAddress = userDecoded["address"] as String;
+      userid = userDecoded["id"];
+      userEmail = userDecoded["email"];
+      userNumber = userDecoded["phone"];
+      userAddress = userDecoded["address"];
       uphoto = userDecoded["photopath"];
       token = _prefs.getString('token').toString();
     });
+    print(userName);
+    print(userid);
+    print(userEmail);
+    print(userNumber);
   }
 
   _getToken() async {

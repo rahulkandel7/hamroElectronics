@@ -48,8 +48,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     setState(() {
       userId = userDecoded["id"] as int;
       userName = userDecoded["name"];
-      userPhone = userDecoded["phone"];
-      userAddress = userDecoded["address"];
+      userPhone = userDecoded["phone"] ?? '';
+      userAddress = userDecoded["address"] ?? '';
     });
   }
 

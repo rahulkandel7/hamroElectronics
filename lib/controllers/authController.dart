@@ -246,18 +246,8 @@ class AuthController extends GetxController {
 
       print('i am facebook');
 
-      final response = await http
-          .post(url, body: jsons, headers: {'Accept': 'application/json'});
-
-      print(response.body);
-
-      var body = json.decode(response.body) as Map<String, dynamic>;
-
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-
-      if (response.statusCode != 200) {
-        print(response.body);
-
+      if (email == null) {
+        print('email verification');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
@@ -267,21 +257,48 @@ class AuthController extends GetxController {
               ),
             ),
             content: const Text(
-              'Something Went Wrong',
+              "You don't have email in Facebook",
             ),
           ),
         );
-      }
+      } else {
+        final response = await http
+            .post(url, body: jsons, headers: {'Accept': 'application/json'});
 
-      if (response.statusCode == 200) {
-        localStorage.setString('user', json.encode(body['check']));
-        localStorage.setString('token', token);
+        print(response.body);
 
-        Navigator.of(context).pushReplacementNamed(Navbar.routeName);
+        var body = json.decode(response.body) as Map<String, dynamic>;
+
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+
+        if (response.statusCode != 200) {
+          print(response.body);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  1000,
+                ),
+              ),
+              content: const Text(
+                'Something Went Wrong',
+              ),
+            ),
+          );
+        }
+
+        if (response.statusCode == 200) {
+          localStorage.setString('user', json.encode(body['check']));
+          localStorage.setString('token', token);
+
+          Navigator.of(context).pushReplacementNamed(Navbar.routeName);
+        } else {
+          print(result.status);
+          print(result.message);
+        }
       }
-    } else {
-      print(result.status);
-      print(result.message);
     }
   }
 

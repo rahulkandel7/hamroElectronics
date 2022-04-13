@@ -64,13 +64,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
             ],
           ),
         ),
-        body: FutureBuilder(
-          future: statusController.fetchStatus(uid.toString()),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return TabBarView(
-                children: [
-                  statusController.status
+        body: TabBarView(
+          children: [
+            FutureBuilder(
+              future: statusController.fetchStatus(uid.toString()),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return statusController.status
                               .where((p0) =>
                                   p0.status == "Pending" ||
                                   p0.status == "Processing")
@@ -134,7 +134,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                               Text(stat[i].pname,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5),
+                                                      .subtitle2),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 8.0),
@@ -180,15 +180,28 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   p0.status == "Processing")
                               .toList()
                               .length,
-                        ),
-                  statusController.status
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 0.8,
+                    ),
+                  );
+                }
+              },
+            ),
+            FutureBuilder(
+              future: statusController.fetchStatus(uid.toString()),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return statusController.status
                               .where((p0) => p0.status == "Completed")
                               .toList()
                               .length ==
                           0
                       ? Center(
                           child: Text(
-                          'No Completed Orders yet',
+                          'No Ordered items yet',
                           style: Theme.of(context).textTheme.subtitle1,
                         ))
                       : ListView.builder(
@@ -241,7 +254,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                               Text(stat[i].pname,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5),
+                                                      .subtitle2),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 8.0),
@@ -285,15 +298,28 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               .where((p0) => p0.status == "Completed")
                               .toList()
                               .length,
-                        ),
-                  statusController.status
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 0.8,
+                    ),
+                  );
+                }
+              },
+            ),
+            FutureBuilder(
+              future: statusController.fetchStatus(uid.toString()),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return statusController.status
                               .where((p0) => p0.status == "Cancelled")
                               .toList()
                               .length ==
                           0
                       ? Center(
                           child: Text(
-                          'No Cancelled items yet',
+                          'No Ordered items yet',
                           style: Theme.of(context).textTheme.subtitle1,
                         ))
                       : ListView.builder(
@@ -346,7 +372,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                               Text(stat[i].pname,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5),
+                                                      .subtitle2),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 8.0),
@@ -370,12 +396,19 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                         stat[i].status,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2,
+                                                            .subtitle1,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
+                                              Text(
+                                                  "(${stat[i].cancelReason ?? ''})",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1!
+                                                      .copyWith(
+                                                          color: Colors.red)),
                                             ],
                                           ),
                                         ),
@@ -390,17 +423,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               .where((p0) => p0.status == "Cancelled")
                               .toList()
                               .length,
-                        ),
-                ],
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 1,
-                ),
-              );
-            }
-          },
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 0.8,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

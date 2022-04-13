@@ -28,6 +28,7 @@ class StatusController extends GetxController {
           pname: body[i][0]["productname"],
           status: body[i][0]["status"],
           image: body[i][0]["photopath"],
+          cancelReason: body[i][0]["reason"],
         ),
       );
     }
